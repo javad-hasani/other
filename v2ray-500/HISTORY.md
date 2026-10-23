@@ -99,3 +99,12 @@
 - **Validation:** Offline only.
 - **Next:** Provision one isolated staging VPS (later separate two nodes), prepare DNS/TLS/SSH safely, verify Remnawave API contract and then integrate billing + n8n.
 
+
+## 2026-10-23 — H009 — Optional local PostgreSQL lab (DONE: templates committed; runtime not started)
+
+- **Assumption / تصور:** A standalone disposable database test environment can be prepared without purchasing the three intended VPSs.
+- **Evidence / شاهد:** Created `docker-compose.lab.yml` (loopback-only PostgreSQL 16), `config/lab.env.example` (empty password placeholder, secrets stay local), `docs/local-lab.md` (start/test/stop instructions). Added Compose validation to CI.
+- **Decision / تصمیم:** The local lab is **test-only** and must never be confused with the Remnawave deployment stack or payment system. The CI database remains disposable and separate from all company databases.
+- **Action:** Commits: `4c2766ed2` (Compose), `54c85e052` (example env), `95dfb7e65` (lab manual), `bf13837d5` (README), `c0c28a950` (CI config validation).
+- **Validation:** Files committed; GitHub CI validates Compose syntax; no live Docker Compose was started by the assistant.
+- **Next:** Local lab may be tested on an operator machine, but VPS sourcing, checkout/payment verification and remote node connectivity remain blocked.
