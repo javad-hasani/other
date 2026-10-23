@@ -155,3 +155,12 @@
 - **Validation:** GitHub Actions after the source-preflight edit **passed**: https://github.com/javad-hasani/other/actions/runs/40005866690 . One intermediate run after changing the lock but *before* changing the preflight count failed (https://github.com/javad-hasani/other/actions/runs/40005838611); root cause was expected-four-repos assertion against new three-repo lock and was corrected. **No upstream Docker stack or API was executed**. No Vercel deployment, VPS, payment, latency or client test.
 - **Next:** On an isolated disposable machine fetch pinned Minishop/Backend/Node, inspect upstream instructions/licenses, test **web-only** shop and Remnawave interoperability. Verify checkout/renewal, local PSP eligibility, Persian localization and **atomic 500 active entitlement hard cap**, then sign off 50-client canary. Do not run the older experimental `db/` migration on either product database.
 
+
+## 2026-10-23 — H014 — Ready-made official admin demo identified (DONE: external demo verified; our admin NOT deployed)
+
+- **Assumption / تصور:** The quickest way to inspect Minishop admin features is to reuse the project's official existing interactive demo rather than building a visual clone.
+- **Evidence / شاهد:** Official Minishop documentation https://minishop.minidoc.cc/getting-started/overview/ explicitly describes browser-based **static mock-data** admin/client routes needing no backend/DB/API. Direct admin users preview: https://minishop.minidoc.cc/demo/admin/users/ . The same maintainer's dev-stand docs specify a Docker Compose full-stack QA option, with frontend `http://127.0.0.1:18082` and local Remnawave panel `http://127.0.0.1:3000`.
+- **Decision / تصمیم:** Present the upstream demo as the immediate UI preview. Do **not** misrepresent it as our Vercel deployment or a functional billing/admin deployment. For real authentication and persisted changes, deploy the upstream stack on a separately controlled Docker host or VPS and verify it first.
+- **Action:** Updated README with official preview and dev-stand entry points. Commit `94339fe3f`.
+- **Validation:** The public official demo and documentation links were retrieved and inspected. No VPS, Docker host, running custom Minishop instance or Vercel deployment available to this project.
+- **Next:** Obtain an isolated Docker host / VPS, then use upstream dev stand with synthetic data; verify secure admin access and compatibility before any real customer/payment records.
