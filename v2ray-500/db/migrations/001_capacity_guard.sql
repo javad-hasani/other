@@ -36,6 +36,7 @@ CREATE INDEX IF NOT EXISTS subscriptions_capacity_idx
 
 CREATE TABLE IF NOT EXISTS provisioning.command_receipts (
   idempotency_key text PRIMARY KEY,
+  customer_ref text NOT NULL,
   request_fingerprint text NOT NULL,
   result jsonb NOT NULL,
   created_at timestamptz NOT NULL DEFAULT now()
@@ -74,7 +75,8 @@ BEGIN
   SELECT * INTO v_prev FROM provisioning.command_receipts
     WHERE idempotency_key = p_idempotency_key;
   IF FOUND THEN
-    IF v_prev.request_fingerprint <> p_request_fingerprint THEN
+    IF v_prev.request_fingerprint <> p_request_fingerprint
+       OR v_prev.customer_ref <> p_customer_ref THEN
       RETURN jsonb_build_object('ok',false,'code','IDEMPOTENCY_CONFLICT');
     END IF;
     RETURN v_prev.result;
@@ -125,8 +127,8 @@ BEGIN
   END IF;
 
   INSERT INTO provisioning.command_receipts(
-    idempotency_key,request_fingerprint,result
-  ) VALUES (p_idempotency_key,p_request_fingerprint,v_result);
+    idempotency_key,customer_ref,request_fingerprint,result
+  ) VALUES (p_idempotency_key,p_customer_ref,p_request_fingerprint,v_result);
 
   RETURN v_result;
 END;
@@ -172,6 +174,7 @@ BEGIN
     SET state=p_next_state,
         remote_user_id=CASE
           WHEN p_next_state='active' THEN p_remote_user_id
+          WHEN p_next_state='released' THEN NULL
           ELSE remote_user_id
         END,
         updated_at=now()
