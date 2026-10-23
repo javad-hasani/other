@@ -1,0 +1,16 @@
+# Ignore all local vendor code, credentials and runtime state.
+vendor/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+data/
+logs/
+backups/
+*.sql
+*.sqlite
+*.db
