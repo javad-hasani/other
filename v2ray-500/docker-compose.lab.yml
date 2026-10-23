@@ -1,0 +1,25 @@
+# OFFLINE / LOCAL DB LAB ONLY — not a production Remnawave or Xray compose file.
+name: v2ray500-lab
+services:
+  provisioning-db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${LAB_DB_USER:?Set LAB_DB_USER in .env}
+      POSTGRES_PASSWORD: ${LAB_DB_PASSWORD:?Set LAB_DB_PASSWORD in .env}
+      POSTGRES_DB: ${LAB_DB_NAME:?Set LAB_DB_NAME in .env}
+      TZ: UTC
+    ports:
+      - "127.0.0.1:${LAB_DB_PORT:-15432}:5432"
+    volumes:
+      - provisioning-lab-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL","pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  provisioning-lab-data:
