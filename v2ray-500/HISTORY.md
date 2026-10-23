@@ -62,3 +62,40 @@
 - Iranian payment gateway, business/abuse policy, refund and support rules.
 - Measured concurrent connection success, latency and bandwidth at 50 and 200 users.
 - Security review, license compliance, tested versions and deployment permissions.
+
+## 2026-10-23 — H005 — Atomic capacity gate (DONE: offline implementation and integration test)
+
+- **Assumption / تصور:** Naive `COUNT(*)` + subsequent `INSERT` can oversubscribe under concurrent n8n runs; retiring an account should not free capacity until the remote resource is disabled.
+- **Evidence / شاهد:** Added `db/migrations/001_capacity_guard.sql` and `tests/test_capacity.py`. The migration uses a transaction-scoped advisory lock, 500-row hard constraint, 50/200/500 staged policy and receipt-based replay protection. Occupied statuses include `reserved`, `provisioning`, `active`, `deactivating`.
+- **Decision / تصمیم:** Only authorized provisioning workers may call SQL functions; no direct DML privileges to the app role. A reused idempotency key for a different customer/hash fails. Renewal is based on absolute expiry, not repeated increments.
+- **Action:** Commits: `b164f0986` (initial SQL), `7677615c6` (existing-row guard correction), `c8e2a8b9a` (integration test), `22e41b208` (customer-bound receipts and released remote ID), `92744d4fb` (additional test), `204443722` (CI).
+- **Validation:** GitHub Actions passed in disposable PostgreSQL 16: https://github.com/javad-hasani/other/actions/runs/39997411508 . Tests include 64 concurrent contenders for 50 seats, 200 and 500 rollout thresholds, 501st denied, lifecycle, renewal and replay conflicts.
+- **Next:** Build and audit the payment verifier and official Remnawave API adapter after selecting the business/payment channel; real customer entitlement is not active.
+
+## 2026-10-23 — H006 — Architecture, automation, operations docs (DONE: designs only)
+
+- **Assumption / تصور:** The dependency on VPS/domain/payment provider does not prevent specifying operational contracts in advance.
+- **Evidence / شاهد:** Added `docs/architecture.md`, `docs/n8n-automation.md`, `docs/security-and-release.md`, `db/README.md`; updated README to distinguish completed offline work from production. Commits `053401b55`, `7863ab911`, `52f8de49b`, `01aad61e5`, `1bd008c48`.
+- **Decision / تصمیم:** Separate Remnawave DB from business provisioning DB. Trust verified payment only; keep internal API, external webhook and DB boundaries explicit. No release from occupied state until confirmed remote deactivation. n8n workflows are **specified**, not deployed/imported.
+- **Action:** Documented node/control-plane layout, SQL permissions, verified payment → reservation → remote provisioning → reconciliation, alert conditions and canary go/no-go.
+- **Validation:** Documentation committed, SQL-backed assumptions supported by H005. No live API, payment-provider, user-client or VPS test yet.
+- **Next:** Provider-specific compatibility, secure credentials and approval gates when deployment infrastructure becomes available.
+
+## 2026-10-23 — H007 — Reproducible dependencies and offline preflight (DONE: source snapshots)
+
+- **Assumption / تصور:** Fetching floating `main` at an unknown future date may silently change upstream behavior.
+- **Evidence / شاهد:** GitHub HEAD SHAs captured in `config/upstream.lock` on 2026-10-23; `scripts/fetch-upstream.sh` modified to use exact pinned commits and to reject drift of an existing checkout. `scripts/preflight.sh` validates manifest, files and syntax without a live server.
+- **Decision / تصمیم:** Snapshot commits are provenance only, not a security audit or compatibility certification. Audit licenses, dependencies and images before server deployment.
+- **Action:** Commits `3c9028e9e` (source lock), `c630e811f` (pinned fetch), `17aa356e6` (preflight), `20d019cba` (CI preflight). Added Python ignore patterns in `bf97bcd1b`.
+- **Validation:** GitHub Actions with preflight and PostgreSQL integration completed successfully: https://github.com/javad-hasani/other/actions/runs/39997631624 .
+- **Next:** On operator machine run `bash scripts/preflight.sh`, then `bash scripts/fetch-upstream.sh`; inspect pinned upstream sources before installing.
+
+## 2026-10-23 — H008 — Unresolved production dependencies (PENDING)
+
+- **Assumption / تصور:** A passing CI job is necessary but does not demonstrate live capacity, client connectivity, billing or security.
+- **Evidence / شاهد:** No VPS credentials, IPs, domains, payment-provider implementation, working Remnawave instance, remote node or real-user canary provided to this project.
+- **Decision / تصمیم:** **NO PRODUCTION DEPLOYMENT.** Do not claim a live VPN or tested 500-user throughput. Remain under the 15,000,000 toman/month budget, pending real provider invoices.
+- **Action:** Recorded blocked items and required test gates; no outside server touched.
+- **Validation:** Offline only.
+- **Next:** Provision one isolated staging VPS (later separate two nodes), prepare DNS/TLS/SSH safely, verify Remnawave API contract and then integrate billing + n8n.
+
