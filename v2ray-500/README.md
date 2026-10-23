@@ -4,6 +4,14 @@
 >
 > **Decisions and completed evidence:** [HISTORY.md](HISTORY.md). **Binding current architecture:** [ADR-001](docs/ADR-001-commerce-stack.md). Both are mandatory reading before any edit or deployment.
 
+## Official admin UI preview — available now (not our instance)
+
+**[Open official Minishop admin demo (Users)](https://minishop.minidoc.cc/demo/admin/users/)**
+
+This is the upstream project's **static mock-data demo**, not an authenticated live instance, not our Vercel deployment, and not linked to a production Remnawave panel. The maintainer's documentation explicitly says that it renders Mini App/customer and web-admin routes without a backend, database or external API: https://minishop.minidoc.cc/getting-started/overview/ .
+
+For an **actual local** Minishop + Remnawave test instance, the maintainer provides a Docker-based dev stand: https://minishop.minidoc.cc/development/dev-stand/ . It requires Docker on an operator machine; frontend is documented at http://127.0.0.1:18082 and panel at http://127.0.0.1:3000. **No local stack was started by ChatGPT** (no Docker host or VPS attached).
+
 ## Final candidate for isolated evaluation
 
 Our project is NOT a new Xray or subscription billing application. **Reuse maintained software and patch only demonstrable gaps.**
