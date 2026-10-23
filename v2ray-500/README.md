@@ -1,102 +1,83 @@
-# V2Ray / Xray — 500-user rollout
+# Xray-500 — reuse-first commercial rollout
 
-> Status: **STAGING / NOT DEPLOYED**. This repository contains a deployment workspace and references to upstream projects, **not forks**, working containers, or a live VPN service.
+> **STAGING PLANNING ONLY — NO VPS / NO ACTIVE VPN / NO LIVE PAYMENT / NO VERCEL PRODUCTION LINK**.
+>
+> **Decisions and completed evidence:** [HISTORY.md](HISTORY.md). **Binding current architecture:** [ADR-001](docs/ADR-001-commerce-stack.md). Both are mandatory reading before any edit or deployment.
 
-## Scope
+## Final candidate for isolated evaluation
 
-- **Hard maximum**: 500 ACTIVE subscriptions (not 500 registered identities).
-- Canary phases: **50 → 200 → 500**, subject to load tests and verified user experience.
-- Initial infra: **1 control-plane VPS**, **2 independent Xray node VPS**; expand based on traffic and CPU.
-- Monthly infrastructure budget: **15,000,000 toman maximum** (exchange rates/provider pricing must be verified at purchase).
-- Estimated traffic: **15 TB/month** at 30 GB per active subscription.
-- Production requirements: domain, TLS, secrets, SSH access, backups, monitoring, alerts, payment-verification service.
+Our project is NOT a new Xray or subscription billing application. **Reuse maintained software and patch only demonstrable gaps.**
 
-## Upstream components (never copy credentials or run unreviewed install scripts)
+| Layer | Selected primary upstream | Status |
+|---|---|---|
+| Web storefront, customer cabinet, admin, subscriptions/payments | [Remnawave Minishop](https://github.com/3252a8/remnawave-minishop), **MIT**, web-only mode supported | **Chosen for staging evaluation**, not deployed |
+| Account & Node control plane | [Official Remnawave backend](https://github.com/remnawave/backend) | Not deployed |
+| Traffic relays | 2 × [Official Remnawave Nodes](https://github.com/remnawave/node) | Not deployed |
+| Vercel | Optional status/landing site prototype in [site/](site/) | **Vercel team access blocked**, not live |
+| n8n / custom SQL guard | Experimental fallback references only ([docs](docs/n8n-automation.md), [db](db/README.md)) | **NOT part of selected MVP** |
 
-| Role | Official repository |
-|---|---|
-| Core backend / control plane | https://github.com/remnawave/backend |
-| Xray / Remnawave node | https://github.com/remnawave/node |
-| Subscription sales automation | https://github.com/BEDOLAGA-DEV/remnawave-bedolaga-telegram-bot |
-| Optional installation helper | https://github.com/Capybara-z/RemnaSetup |
-| Official docs | https://docs.rw/ |
+Minishop supports registration via email and web-based admin without Telegram (read its [no-Telegram guide](https://github.com/3252a8/remnawave-minishop/blob/main/docs/features/telegram-optional.md)). **Bedolaga is NOT selected:** its LICENSE contains Commons Clause restricting commercial service resale, despite short README MIT text. Alternative [STEALTHNET](https://github.com/STEALTHNET-APP/remnawave-STEALTHNET-Bot) requires an independent security/license fit review.
 
-**Important:** Bedolaga is a **Telegram** bot, not a Bale bot. An Iranian payment gateway/Bale channel integration is **not shipped** here. The upstream Remnawave `panel` repository is documentation/UI-related; actual backend deployment uses `remnawave/backend`.
+### Business constraints
 
-## Prepare sources (safe: clones only; does not start servers)
+- Absolute cap **500 paid active entitlements**, including staged intake **50 → 200 → 500**, not 500 simultaneous sessions.
+- Infrastructure OPEX ceiling **15,000,000 toman/month**; provider traffic/FX and invoices not yet confirmed.
+- Planning usage: 30 GB/entitlement/month × 500 = 15 TB/month, benchmark before accepting 500.
+- All project infrastructure must remain completely separate from SFIORD company systems and credentials.
+
+### Development rules
+
+1. Search upstream settings and modules, then test them **before** designing a new component.
+2. Keep one commerce database and one entitlement lifecycle owner (Minishop). **Do not** run duplicate n8n checkout or custom billing database.
+3. Only add verified missing capabilities, probably Iranian PSP, Persian UX and true atomic 500-active seat cap. **None is implemented/integrated yet**.
+4. No real credentials, users or payment details in this public repository.
+5. Record **تصور / شاهد / تصمیم / اقدام / تست / مرحله بعد** in [HISTORY.md](HISTORY.md) after every material change.
+6. Stage first, then trial with 50 real users and measured go/no-go gates.
+
+## Safe pre-server work
 
 ```bash
 git clone https://github.com/javad-hasani/other.git
 cd other/v2ray-500
+bash scripts/preflight.sh
 bash scripts/fetch-upstream.sh
 ```
 
-The script clones upstream projects into `vendor/`, which is ignored by Git. Review and pin exact upstream versions/SHAs before production.
+These scripts only validate the workspace and **clone exactly pinned upstream source commits** into ignored `vendor/`. They do not deploy containers, install software, call a payment provider or touch remote servers.
 
-## Production install strategy
+Current reviewed release snapshot (2026-10-23):
+- Minishop **v3.8.3** (`0fe3ac3abba160517538cc86e812e655d46fe55a`)
+- Remnawave Backend **3.4.7** (`52321390ac4efe04a610811446d87335f1d10a93`)
+- Remnawave Node **3.4.3** (`2ad154f8f1016c94c1872f337268af878af61b18`)
 
-1. Provision three separate Ubuntu 24.04 LTS VPS instances and DNS records for the control plane and nodes. Do not put secrets in GitHub.
-2. Configure SSH keys, firewall, updates, and a private panel/control-plane network where feasible. Do **not** expose databases, metrics or internal panel ports publicly.
-3. Follow the **official** Remnawave installation documentation for backend, PostgreSQL, Valkey, reverse proxy, TLS and subscription service: https://docs.rw/
-4. Register each Remnawave Node, create a test profile/host, then validate client connections end-to-end.
-5. Add Bedolaga **only after** auditing its integrations and deciding on Telegram vs Bale and an Iranian payment provider. Keep payment verification server-side.
-6. Enforce the **500 ACTIVE** user limit in the provisioning backend with a transaction/lock and unique idempotency key. Do not rely on an informational `.env` field to enforce a hard capacity limit.
-7. Set monitoring, alerting, backups and restore tests; then canary 50 → 200 → 500 with explicit go/no-go gates.
+The versions are pinned for **reproducible evaluation**, not verified compatibility/security.
 
-## Critical safety / operational notes
+## Required proof before buying services from customers
 
-- The script in this repository **does not** start or modify an external server.
-- Clone sources and review changes before using third-party installers, especially those requesting root.
-- A public GitHub repository must never contain private keys, tokens, user records, passwords, subscription URLs or payment data.
-- Avoid blind `curl | bash` and unpinned images in production. Review the upstream Docker Compose files and pin tested image digests/tags.
-- Billing records are separate from the Remnawave panel database; provisioning must be idempotent and auditable.
-- 500 subscriptions is an administrative cap, **not** a throughput guarantee: benchmark realistic simultaneous connections and monthly traffic.
-- GitHub Actions / Vercel **cannot host long-lived TCP/UDP Xray nodes** as a replacement for VPS.
+- [x] Upstream candidates and licenses reviewed from primary repositories
+- [x] Minishop selected for **staging evaluation**
+- [x] Source revisions pinned and staging runbook written
+- [x] Previous experimental 500-seat SQL guard passed **disposable** PostgreSQL CI tests (NOT integrated in Minishop)
+- [ ] Independent license/security and dependency audit
+- [ ] Remnawave + Minishop web-only Docker integration tested
+- [ ] Iranian PSP chosen, validated and integrated if required
+- [ ] True atomic 500-active cap in actual Minishop checkout verified
+- [ ] Persian checkout and toman/rial correctness verified
+- [ ] 3 VPS and domains acquired, firewalls/TLS/backups in place
+- [ ] Real client connectivity/load tests, 50 → 200 → 500 phase sign-offs
 
-## Deployment status checklist
+## Project index
 
-- [x] Upstream projects identified
-- [x] GitHub staging workspace prepared
-- [ ] Upstreams cloned/audited on deployment operator machine
-- [ ] Domains/DNS and VPS provisioned
-- [ ] Control plane running and secured
-- [ ] Two nodes running and verified
-- [x] 500-active-user SQL reservation guard tested in isolated CI (NOT integrated with production provisioning)
-- [ ] Payment gateway/channel integration verified
-- [ ] Load tests, monitoring, backups and canary rollout completed
+- [HISTORY.md](HISTORY.md) — append-only engineering log; most important document
+- [ADR-001 — current approved staging direction](docs/ADR-001-commerce-stack.md)
+- [Minishop staging runbook](docs/minishop-staging-runbook.md)
+- [Build versus reuse evaluation](docs/build-vs-reuse-review.md)
+- [Pinned upstream sources](config/upstream.lock)
+- [Offline source preflight](scripts/preflight.sh)
+- [Read-only status dashboard prototype](site/)
+- [Earlier architecture sketch — experimental](docs/architecture.md)
+- [Earlier n8n orchestration — experimental, NOT selected](docs/n8n-automation.md)
+- [Earlier 500-seat SQL proof — isolated CI, NOT selected for production](db/README.md)
+- [Local disposable database lab](docs/local-lab.md)
 
-## Project navigation
-
-- **[HISTORY.md](HISTORY.md)** — canonical append-only implementation and decision history (mandatory for each change)
-- [Architecture](docs/architecture.md) — control plane, nodes, trust boundaries, scaling limits
-- [n8n automation contract](docs/n8n-automation.md) — exact business workflow states and error handling (design; not connected)
-- [Database migration and permission guide](db/README.md) — atomic 500-seat capacity guard
-- [Integration tests](tests/test_capacity.py) — 50/200/500 seat caps, retries, concurrency
-- [Security and release policy](docs/security-and-release.md)
-- [Deployment checklist](docs/rollout-checklist.md)
-- [Pinned upstream manifest](config/upstream.lock)
-- [Offline preflight script](scripts/preflight.sh)
-- [Disposable local PostgreSQL lab](docs/local-lab.md) — optional, no VPS required
-
-### Prepared and verified **without VPS**
-
-- SQL reservation guard and lifecycle helpers are implemented in a **separate future provisioning database**, not in the Remnawave product DB.
-- CI uses disposable PostgreSQL 16 and tests 64 competing requests at 50-seat stage, 500-seat cap, duplicate operations, activation/deactivation/renewal.
-- Dependency source commit SHAs are captured as a **snapshot**; compatibility/security of specific versions is **not yet approved**.
-- `bash scripts/preflight.sh` validates source manifest and project structure without installing or changing a server.
-- **Payment processor connection, real Remnawave API integration, two nodes, throughput and commercial checkout are NOT live.** No source code has been forked into this repository.
-
-### Status checklist (offline versus online)
-
-- [x] Upstream projects identified and snapshot pinned
-- [x] GitHub staging workspace prepared
-- [x] Permanent HISTORY.md initialized
-- [x] Transactional seat guard implemented and tested in disposable CI database
-- [x] n8n integration contracts and operational docs drafted
-- [x] Local disposable PostgreSQL Docker Compose template created (not started)
-- [ ] Upstreams cloned/security-audited on deployment machine
-- [ ] Payment verification and Remnawave adapters implemented/validated
-- [ ] Domain, VPS and backup storage purchased
-- [ ] Secure control plane and two nodes running
-- [ ] Canary 50 → 200 → 500 passed with real network conditions
-
+**Important:** GitHub or Vercel cannot host persistent Xray proxy Nodes; eventual customer website may be hosted separately, but the Remnawave/Minishop backend needs persistent infrastructure.
