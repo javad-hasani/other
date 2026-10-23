@@ -50,6 +50,7 @@ def main():
         expect(provision("customer-a","payment-a",conn=db), "RESERVED", True)
         expect(provision("customer-a","payment-a",conn=db), "RESERVED", True)  # exact replay
         expect(provision("customer-a","payment-a","other-hash",conn=db), "IDEMPOTENCY_CONFLICT", False)
+        expect(provision("customer-b","payment-a","sha256:payment-a",conn=db), "IDEMPOTENCY_CONFLICT", False)
         expect(provision("customer-a","payment-b",conn=db), "ALREADY_ALLOCATED", False)
         assert occupied(db) == 1
         expect(db.execute("SELECT provisioning.transition(%s,%s)",("customer-a","active")).fetchone()[0],
