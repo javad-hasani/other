@@ -14,3 +14,9 @@ backups/
 *.sql
 *.sqlite
 *.db
+
+# Local test / Python state
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
