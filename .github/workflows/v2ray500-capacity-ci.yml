@@ -44,5 +44,11 @@ jobs:
         run: python -m pip install "psycopg[binary]>=3.2,<4"
       - name: Offline preflight / pinned source integrity
         run: bash v2ray-500/scripts/preflight.sh
+      - name: Validate local Docker Compose (no container launched)
+        env:
+          LAB_DB_USER: lab_ci
+          LAB_DB_NAME: lab_ci
+          LAB_DB_PASSWORD: disposable_ci_config_only
+        run: docker compose -f v2ray-500/docker-compose.lab.yml config --quiet
       - name: Verify 500-seat reservation, idempotency, and race safety
         run: python v2ray-500/tests/test_capacity.py
