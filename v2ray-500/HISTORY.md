@@ -135,3 +135,13 @@
 - **Action:** Attempted `create_git_project` with `deploy=true`; it was rejected before creating any deployment.
 - **Validation:** **NOT DEPLOYED**; no verified Vercel URL. Problem is authorization, not frontend build.
 - **Next:** User grants this Vercel plugin connection access to `javadhreporter-gmailcoms-projects`; retry Git link and verify READY plus URL. Xray runtime remains VPS-only.
+
+## 2026-10-23 — H012 — Reuse-first architecture review (DONE: research and documented policy; selection pending)
+
+- **Assumption / تصور:** For a 500-subscription business, developing a parallel customer portal, full billing system, SQL lifecycle and n8n workflows upfront would repeat features already supported by the Remnawave community ecosystem.
+- **Evidence / شاهد:** Reviewed official Remnawave documentation and curated ecosystem, plus primary repository READMEs: official core already handles user management, node control, quotas and subscription pages; **Remnawave Minishop** documents optional Telegram and a standalone Web App, whereas **Bedolaga + Cabinet** is Telegram-centric, and **STEALTHNET** is a further combined web/bot candidate. No candidate has yet been security audited or verified to enforce a global atomic 500-active-subscription cap or domestic Iranian payment.
+- **Decision / تصمیم:** **Reuse before build**. Select **one** maintained commerce product after gap analysis; keep custom SQL, n8n and the hand-built Vercel status dashboard as **optional experiments**, not assumed production architecture. Never run competing billing systems or split entitlement ownership. Vercel is optional frontend/landing hosting and is not needed for the Xray data plane.
+- **Action:** Created `docs/build-vs-reuse-review.md` with explicit candidates, alternatives, acceptance gates, procurement/security requirements and no-code-first staging strategy. Commit `a0f90671ffea4355881b75c1daf91e641ae5ea1d`.
+- **Validation:** Source documentation verified; **no live release, payment, test client, VPS or integration**. This is an architectural review, not a benchmark.
+- **Next:** Evaluate Minishop against Bedolaga Cabinet on reproducible test criteria, confirm licensing/security, then choose **one** product and implement only unfilled gaps.
+
