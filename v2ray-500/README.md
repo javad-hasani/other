@@ -61,8 +61,40 @@ The script clones upstream projects into `vendor/`, which is ignored by Git. Rev
 - [ ] Domains/DNS and VPS provisioned
 - [ ] Control plane running and secured
 - [ ] Two nodes running and verified
-- [ ] 500-active-user provisioning gate implemented and tested
+- [x] 500-active-user SQL reservation guard tested in isolated CI (NOT integrated with production provisioning)
 - [ ] Payment gateway/channel integration verified
 - [ ] Load tests, monitoring, backups and canary rollout completed
 
-See [rollout checklist](docs/rollout-checklist.md) for acceptance criteria.
+## Project navigation
+
+- **[HISTORY.md](HISTORY.md)** — canonical append-only implementation and decision history (mandatory for each change)
+- [Architecture](docs/architecture.md) — control plane, nodes, trust boundaries, scaling limits
+- [n8n automation contract](docs/n8n-automation.md) — exact business workflow states and error handling (design; not connected)
+- [Database migration and permission guide](db/README.md) — atomic 500-seat capacity guard
+- [Integration tests](tests/test_capacity.py) — 50/200/500 seat caps, retries, concurrency
+- [Security and release policy](docs/security-and-release.md)
+- [Deployment checklist](docs/rollout-checklist.md)
+- [Pinned upstream manifest](config/upstream.lock)
+- [Offline preflight script](scripts/preflight.sh)
+
+### Prepared and verified **without VPS**
+
+- SQL reservation guard and lifecycle helpers are implemented in a **separate future provisioning database**, not in the Remnawave product DB.
+- CI uses disposable PostgreSQL 16 and tests 64 competing requests at 50-seat stage, 500-seat cap, duplicate operations, activation/deactivation/renewal.
+- Dependency source commit SHAs are captured as a **snapshot**; compatibility/security of specific versions is **not yet approved**.
+- `bash scripts/preflight.sh` validates source manifest and project structure without installing or changing a server.
+- **Payment processor connection, real Remnawave API integration, two nodes, throughput and commercial checkout are NOT live.** No source code has been forked into this repository.
+
+### Status checklist (offline versus online)
+
+- [x] Upstream projects identified and snapshot pinned
+- [x] GitHub staging workspace prepared
+- [x] Permanent HISTORY.md initialized
+- [x] Transactional seat guard implemented and tested in disposable CI database
+- [x] n8n integration contracts and operational docs drafted
+- [ ] Upstreams cloned/security-audited on deployment machine
+- [ ] Payment verification and Remnawave adapters implemented/validated
+- [ ] Domain, VPS and backup storage purchased
+- [ ] Secure control plane and two nodes running
+- [ ] Canary 50 → 200 → 500 passed with real network conditions
+
