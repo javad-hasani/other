@@ -42,5 +42,7 @@ jobs:
           python-version: "3.12"
       - name: Install PostgreSQL client
         run: python -m pip install "psycopg[binary]>=3.2,<4"
+      - name: Offline preflight / pinned source integrity
+        run: bash v2ray-500/scripts/preflight.sh
       - name: Verify 500-seat reservation, idempotency, and race safety
         run: python v2ray-500/tests/test_capacity.py
