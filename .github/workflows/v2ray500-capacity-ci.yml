@@ -3,11 +3,21 @@ name: V2Ray-500 capacity guard
 on:
   push:
     paths:
-      - "v2ray-500/**"
+      - "v2ray-500/db/**"
+      - "v2ray-500/tests/**"
+      - "v2ray-500/scripts/**"
+      - "v2ray-500/config/upstream.lock"
+      - "v2ray-500/config/lab.env.example"
+      - "v2ray-500/docker-compose.lab.yml"
       - ".github/workflows/v2ray500-capacity-ci.yml"
   pull_request:
     paths:
-      - "v2ray-500/**"
+      - "v2ray-500/db/**"
+      - "v2ray-500/tests/**"
+      - "v2ray-500/scripts/**"
+      - "v2ray-500/config/upstream.lock"
+      - "v2ray-500/config/lab.env.example"
+      - "v2ray-500/docker-compose.lab.yml"
       - ".github/workflows/v2ray500-capacity-ci.yml"
   workflow_dispatch:
 
