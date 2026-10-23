@@ -108,3 +108,12 @@
 - **Action:** Commits: `4c2766ed2` (Compose), `54c85e052` (example env), `95dfb7e65` (lab manual), `bf13837d5` (README), `c0c28a950` (CI config validation).
 - **Validation:** Files committed; GitHub CI validates Compose syntax; no live Docker Compose was started by the assistant.
 - **Next:** Local lab may be tested on an operator machine, but VPS sourcing, checkout/payment verification and remote node connectivity remain blocked.
+
+## 2026-10-23 — H010 — Final CI verification and trigger cost control (DONE)
+
+- **Assumption / تصور:** Rerunning the full PostgreSQL race test for every prose/history change wastes CI runtime without checking changed executable logic.
+- **Evidence / شاهد:** Compose validation and PostgreSQL integration both passed on the project state through `H009`: https://github.com/javad-hasani/other/actions/runs/39998059562 .
+- **Decision / تصمیم:** CI now triggers on SQL, tests, scripts, pinned sources, example lab env, lab Compose, and CI workflow edits—not on documentation-only commits. It remains available through `workflow_dispatch`.
+- **Action:** Updated GitHub Actions path filters in commit `3cf20e8f3`.
+- **Validation:** Previous full CI run passed; updated workflow re-run is independently tracked at https://github.com/javad-hasani/other/actions/runs/39998141471 .
+- **Next:** Keep all future work in `HISTORY.md`, distinguish tests from deployment, and procure VPS and domain before attempting any live Remnawave/Xray service.
