@@ -117,3 +117,12 @@
 - **Action:** Updated GitHub Actions path filters in commit `3cf20e8f3`.
 - **Validation:** Previous full CI run passed; updated workflow re-run is independently tracked at https://github.com/javad-hasani/other/actions/runs/39998141471 .
 - **Next:** Keep all future work in `HISTORY.md`, distinguish tests from deployment, and procure VPS and domain before attempting any live Remnawave/Xray service.
+
+## 2026-10-23 — H011 — Vercel dashboard (DONE: source files / BLOCKED: remote deployment)
+
+- **Assumption / تصور:** Vercel can host a static management/status frontend, but cannot substitute for long-lived TCP/UDP Xray Nodes or always-on Remnawave runtime.
+- **Evidence / شاهد:** Added static RTL Persian dashboard in `site/`: `index.html`, `styles.css`, `app.js`, `favicon.svg`, `vercel.json` with security headers, project timeline H001-H010, clear non-live status, planned capacity and architecture. Commits `c275e3554`, `f12b9b00b`, `3ec00017f`, `42a62942b`, `6fdd7f49d`.
+- **Decision / تصمیم:** Deploy **only** the read-only status website from GitHub `javad-hasani/other`, root directory `v2ray-500/site`; no billing, live VPN or admin endpoints on Vercel. The website is static and has no backend secrets.
+- **Action:** Attempted to create a Git-linked Vercel project `xray-500-console` under the discovered Vercel team `team_HfjRdUCd8exaNgZkbomGUfEC`.
+- **Validation:** GitHub files committed. **Vercel deployment NOT created**: provider returned `403 forbidden`, connection has no authorization for team scope `javadhreporter-gmailcoms-projects`. No Vercel URL is verified.
+- **Next:** User grants the Vercel connection access to the correct team; retry Git-linked project creation with `rootDirectory=v2ray-500/site`, confirm Vercel deployment READY and check URL response. Update this record with successful URL only after verification.
