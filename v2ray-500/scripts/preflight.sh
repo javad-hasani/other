@@ -11,7 +11,8 @@ import re
 paths = [
     'HISTORY.md', 'README.md', 'config/upstream.lock',
     'db/migrations/001_capacity_guard.sql',
-    'tests/test_capacity.py', 'docs/architecture.md',
+    'tests/test_capacity.py', 'docs/ADR-001-commerce-stack.md',
+    'docs/architecture.md',
     'docs/n8n-automation.md', 'docs/security-and-release.md',
 ]
 missing = [p for p in paths if not Path(p).is_file()]
@@ -21,8 +22,10 @@ rows = [
     ln.split('\t') for ln in Path('config/upstream.lock').read_text().splitlines()
     if ln.strip() and not ln.startswith('#')
 ]
-assert len(rows) == 4, 'Expected exactly four pinned upstreams'
+assert len(rows) == 3, 'Expected 3 pinned selected upstreams'
 assert all(len(r) == 3 and re.fullmatch(r'[0-9a-f]{40}', r[2]) for r in rows)
+assert {r[0] for r in rows} == {'remnawave-minishop', 'remnawave-backend', 'remnawave-node'}
+assert all('bedolaga' not in r[1].lower() for r in rows)
 assert 'hard_max = 500' in Path('db/migrations/001_capacity_guard.sql').read_text()
 print('PASS: offline preflight, pinned source manifest, files and SQL cap')
 PY
