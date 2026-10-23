@@ -76,6 +76,7 @@ The script clones upstream projects into `vendor/`, which is ignored by Git. Rev
 - [Deployment checklist](docs/rollout-checklist.md)
 - [Pinned upstream manifest](config/upstream.lock)
 - [Offline preflight script](scripts/preflight.sh)
+- [Disposable local PostgreSQL lab](docs/local-lab.md) — optional, no VPS required
 
 ### Prepared and verified **without VPS**
 
@@ -92,6 +93,7 @@ The script clones upstream projects into `vendor/`, which is ignored by Git. Rev
 - [x] Permanent HISTORY.md initialized
 - [x] Transactional seat guard implemented and tested in disposable CI database
 - [x] n8n integration contracts and operational docs drafted
+- [x] Local disposable PostgreSQL Docker Compose template created (not started)
 - [ ] Upstreams cloned/security-audited on deployment machine
 - [ ] Payment verification and Remnawave adapters implemented/validated
 - [ ] Domain, VPS and backup storage purchased
