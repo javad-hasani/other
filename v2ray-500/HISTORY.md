@@ -126,3 +126,12 @@
 - **Action:** Attempted to create a Git-linked Vercel project `xray-500-console` under the discovered Vercel team `team_HfjRdUCd8exaNgZkbomGUfEC`.
 - **Validation:** GitHub files committed. **Vercel deployment NOT created**: provider returned `403 forbidden`, connection has no authorization for team scope `javadhreporter-gmailcoms-projects`. No Vercel URL is verified.
 - **Next:** User grants the Vercel connection access to the correct team; retry Git-linked project creation with `rootDirectory=v2ray-500/site`, confirm Vercel deployment READY and check URL response. Update this record with successful URL only after verification.
+
+## 2026-10-23 — H012 — Vercel access verification (BLOCKED: authorization)
+
+- **Assumption / تصور:** The prepared static web console can deploy when Vercel team scope is authorized.
+- **Evidence / شاهد:** GitHub repository `javad-hasani/other` and `v2ray-500/site` files verified. Authenticated Vercel account has default team `team_HfjRdUCd8exaNgZkbomGUfEC`; team/project lookup and Git-linked project creation returned HTTP 403 for `javadhreporter-gmailcoms-projects`.
+- **Decision / تصمیم:** Do not deploy into a different or guessed owner. Preserve Vercel target `xray-500-console`, Git repository `javad-hasani/other` and rootDirectory `v2ray-500/site`.
+- **Action:** Attempted `create_git_project` with `deploy=true`; it was rejected before creating any deployment.
+- **Validation:** **NOT DEPLOYED**; no verified Vercel URL. Problem is authorization, not frontend build.
+- **Next:** User grants this Vercel plugin connection access to `javadhreporter-gmailcoms-projects`; retry Git link and verify READY plus URL. Xray runtime remains VPS-only.
