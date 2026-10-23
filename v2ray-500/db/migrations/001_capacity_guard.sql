@@ -52,6 +52,7 @@ AS $$
 DECLARE
   v_prev provisioning.command_receipts%ROWTYPE;
   v_existing provisioning.subscriptions%ROWTYPE;
+  v_has_existing boolean;
   v_allowed integer;
   v_occupied integer;
   v_subscription_id bigint;
@@ -81,8 +82,9 @@ BEGIN
 
   SELECT * INTO v_existing FROM provisioning.subscriptions
     WHERE customer_ref = p_customer_ref FOR UPDATE;
+  v_has_existing := FOUND;
 
-  IF FOUND AND v_existing.state <> 'released' THEN
+  IF v_has_existing AND v_existing.state <> 'released' THEN
     v_result := jsonb_build_object(
       'ok',false,'code','ALREADY_ALLOCATED',
       'subscription_id',v_existing.id,'state',v_existing.state
@@ -104,7 +106,7 @@ BEGIN
         'occupied',v_occupied,'limit',v_allowed
       );
     ELSE
-      IF FOUND THEN
+      IF v_has_existing THEN
         UPDATE provisioning.subscriptions
           SET state='reserved', remote_user_id=NULL,
               expires_at=p_expires_at, updated_at=now()
