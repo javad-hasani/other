@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="داشبورد آماده‌سازی پروژه Xray-500؛ تاریخچه مهندسی، ظرفیت، معماری و مراحل استقرار">
+  <meta name="theme-color" content="#0b1019">
+  <title>Xray-500 | مرکز کنترل پروژه</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <script defer src="/app.js"></script>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="#overview" aria-label="Xray-500">
+      <span class="brand-mark">X<span>5</span></span>
+      <span><strong>XRAY<span class="brand-dot">.</span>500</strong><small>PROJECT CONSOLE</small></span>
+    </a>
+    <div class="nav-caption">فضای کاری</div>
+    <nav aria-label="منوی پروژه">
+      <a class="nav-link active" href="#overview" data-nav="overview"><span class="nav-icon">◈</span>نمای کلی</a>
+      <a class="nav-link" href="#architecture" data-nav="architecture"><span class="nav-icon">⬡</span>معماری سیستم</a>
+      <a class="nav-link" href="#roadmap" data-nav="roadmap"><span class="nav-icon">▦</span>نقشه راه</a>
+      <a class="nav-link" href="#history" data-nav="history"><span class="nav-icon">◷</span>تاریخچه تغییرات</a>
+      <a class="nav-link" href="#sources" data-nav="sources"><span class="nav-icon">⌘</span>منابع و فایل‌ها</a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="sidebar-status"><span class="status-pulse"></span><div><strong>Pre-deployment</strong><small>سرور متصل نیست</small></div></div>
+      <a class="sidebar-repo" target="_blank" rel="noopener noreferrer" href="https://github.com/javad-hasani/other/tree/main/v2ray-500">مشاهده Repository <span>↗</span></a>
+    </div>
+  </aside>
+  <div class="workspace">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="mobile-menu" id="menu-toggle" aria-label="باز کردن منو">☰</button>
+        <span class="crumb">Workspace</span><span class="crumb-separator">/</span><span class="crumb-active" id="page-label">نمای کلی</span>
+      </div>
+      <div class="topbar-right">
+        <span class="top-branch"><span class="dot gray"></span> main</span>
+        <span class="top-date">۲۳ اکتبر ۲۰۲۶</span>
+        <a class="icon-button" href="https://github.com/javad-hasani/other/tree/main/v2ray-500" rel="noopener noreferrer" target="_blank" aria-label="گیتهاب">↗</a>
+      </div>
+    </header>
+    <main class="main">
+      <section id="overview" class="panel-section current" aria-labelledby="overview-title">
+        <div class="intro">
+          <div><div class="eyebrow">PROJECT / XRAY-500</div><h1 id="overview-title">مرکز کنترل پروژه</h1><p>نمای وضعیت آماده‌سازی سرویس چندکاربره Xray و مسیر رسیدن به استقرار عملیاتی.</p></div>
+          <span class="phase-tag"><span class="status-pulse"></span> مرحله آماده‌سازی</span>
+        </div>
+        <div class="notice"><span class="notice-icon">ⓘ</span><div><strong>این داشبورد پیش‌نمایش است، نه پنل زنده VPN.</strong><p>اطلاعات این صفحه از مستندات پروژه تهیه شده‌اند. هیچ VPS، سرویس Xray یا API پرداختی به این وب‌سایت متصل نیست.</p></div></div>
+        <div class="metrics-grid">
+          <article class="metric-card"><span class="metric-label">حداکثر اشتراک فعال</span><div class="metric-value" dir="ltr">500</div><span class="metric-meta"><i class="small-dot green"></i> سقف ثابت تعریف‌شده در SQL</span><span class="metric-accent"></span></article>
+          <article class="metric-card"><span class="metric-label">سقف فاز آزمایشی</span><div class="metric-value" dir="ltr">50 <small>/ 500</small></div><span class="metric-meta"><i class="small-dot blue"></i> افزایش مرحله‌ای بعد از تست</span><span class="metric-accent blue-accent"></span></article>
+          <article class="metric-card"><span class="metric-label">سقف بودجه زیرساخت</span><div class="metric-value" dir="ltr">15 <small>میلیون تومان</small></div><span class="metric-meta"><i class="small-dot amber"></i> ماهانه، پیش از خرید</span><span class="metric-accent amber-accent"></span></article>
+          <article class="metric-card"><span class="metric-label">وضعیت سرویس</span><div class="metric-value text-value">آفلاین</div><span class="metric-meta"><i class="small-dot gray"></i> هنوز به VPS متصل نشده</span><span class="metric-accent gray-accent"></span></article>
+        </div>
+        <div class="two-col">
+          <article class="surface-card">
+            <div class="card-header"><div><div class="tiny-label">ROLLOUT</div><h2>برنامه افزایش ظرفیت</h2></div><span class="soft-label">برنامه‌ریزی</span></div>
+            <p class="muted">مراحل زیر فقط نشان‌دهنده برنامه استقرار هستند؛ تعداد کاربران واقعی در دسترس نیست.</p>
+            <div class="stage-track"><div class="stage-progress"></div><div class="stage-item selected"><span class="stage-circle">01</span><strong>۵۰ کاربر</strong><small>Canary</small></div><div class="stage-item"><span class="stage-circle">02</span><strong>۲۰۰ کاربر</strong><small>Load Test</small></div><div class="stage-item"><span class="stage-circle">03</span><strong>۵۰۰ کاربر</strong><small>Production</small></div></div>
+            <div class="inline-foot"><span>فعال‌سازی هر مرحله نیازمند تأیید تست است</span><a href="#roadmap">نقشه راه ←</a></div>
+          </article>
+          <article class="surface-card">
+            <div class="card-header"><div><div class="tiny-label">READINESS</div><h2>آمادگی استقرار</h2></div><span class="soft-label neutral">بدون سرور</span></div>
+            <div class="status-list">
+              <div><span class="circle-check">✓</span><span>ساختار GitHub و HISTORY.md</span><strong>آماده</strong></div>
+              <div><span class="circle-check">✓</span><span>SQL Guard و تست ظرفیت</span><strong>تست‌شده</strong></div>
+              <div><span class="circle-check">✓</span><span>قراردادهای Automation</span><strong>مستند</strong></div>
+              <div><span class="circle-pending">○</span><span>تأمین سرورها و دامنه</span><strong class="pending-text">در انتظار</strong></div>
+              <div><span class="circle-pending">○</span><span>اتصال Remnawave و پرداخت</span><strong class="pending-text">اجرانشده</strong></div>
+            </div>
+          </article>
+        </div>
+        <div class="section-row"><h2>مسیرهای سریع</h2><span>Repository / Documentation</span></div>
+        <div class="quick-grid">
+          <a class="quick-card" href="#history"><span class="quick-icon">◷</span><strong>تاریخچه مهندسی</strong><small>تصمیم‌ها و تغییرات H001 تا H010</small><span class="quick-arrow">↖</span></a>
+          <a class="quick-card" href="#architecture"><span class="quick-icon">⬡</span><strong>معماری زیرساخت</strong><small>Control Plane + 2 Xray Nodes</small><span class="quick-arrow">↖</span></a>
+          <a class="quick-card" href="#sources"><span class="quick-icon">⌘</span><strong>کد و مستندات</strong><small>SQL، تست، Docker Lab و CI</small><span class="quick-arrow">↖</span></a>
+        </div>
+      </section>
+      <section id="architecture" class="panel-section" aria-labelledby="arch-title">
+        <div class="intro"><div><div class="eyebrow">SYSTEM DESIGN</div><h1 id="arch-title">معماری سیستم</h1><p>تفکیک مسیر ترافیک کاربران از کنترل پنل و گردش‌کارهای تجاری.</p></div></div>
+        <div class="notice"><span class="notice-icon">ⓘ</span><div><strong>نمودار منطقی، نه اتصال زنده</strong><p>هنوز هیچ Node یا سرویس Remnawave در این پروژه استقرار پیدا نکرده است.</p></div></div>
+        <div class="diagram surface-card">
+          <div class="diagram-box users"><span>◎</span><strong>کاربران نهایی</strong><small>v2rayNG / Hiddify / v2rayN</small></div>
+          <div class="diagram-connect">↓ ترافیک کلاینت</div>
+          <div class="node-pair"><div class="diagram-box node"><span>▣</span><strong>Xray Node 01</strong><small>VPS مجزا · اجرا نشده</small></div><div class="diagram-box node"><span>▣</span><strong>Xray Node 02</strong><small>VPS مجزا · اجرا نشده</small></div></div>
+          <div class="diagram-connect">↕ پیکربندی و مدیریت</div>
+          <div class="diagram-box control"><span>⬡</span><strong>Remnawave Control Plane</strong><small>PostgreSQL + Valkey · اجرا نشده</small></div>
+          <div class="diagram-connect">↕ REST API</div>
+          <div class="node-pair"><div class="diagram-box business"><span>◈</span><strong>Billing / Provisioning</strong><small>500-seat PostgreSQL Guard</small></div><div class="diagram-box business"><span>⌘</span><strong>n8n Automation</strong><small>قرارداد آماده · متصل نشده</small></div></div>
+        </div>
+        <div class="quick-grid">
+          <div class="quick-card static"><strong>Control Plane</strong><small>مدیریت اشتراک و وضعیت Nodeها. باید روی VPS همیشه‌روشن اجرا شود.</small></div>
+          <div class="quick-card static"><strong>Data Plane</strong><small>دو سرور مستقل با Xray-core برای پردازش ترافیک و مسیر جایگزین.</small></div>
+          <div class="quick-card static"><strong>Vercel Website</strong><small>فقط داشبورد مستندات و در آینده UI یا APIهای سبک HTTPS.</small></div>
+        </div>
+      </section>
+      <section id="roadmap" class="panel-section" aria-labelledby="roadmap-title">
+        <div class="intro"><div><div class="eyebrow">DELIVERY PLAN</div><h1 id="roadmap-title">نقشه راه</h1><p>کارهای تکمیل‌شده و موارد وابسته به تهیه زیرساخت.</p></div></div>
+        <div class="roadmap-grid">
+          <article class="surface-card roadmap-card"><span class="step-number">فاز ۰۱</span><h2>مهندسی پیش از سرور</h2><span class="pill done">تکمیل مستندات و تست‌های اولیه</span><ul><li>GitHub + HISTORY دائمی</li><li>مهاجرت SQL کنترل ظرفیت</li><li>تست CI با PostgreSQL آزمایشی</li><li>قرارداد n8n و سیاست امنیتی</li><li>فایل‌های آزمایش Docker</li></ul></article>
+          <article class="surface-card roadmap-card"><span class="step-number">فاز ۰۲</span><h2>استقرار زیرساخت</h2><span class="pill pending">در انتظار VPS و دامنه</span><ul><li>سرور پنل با TLS و Backup</li><li>دو Xray Node مجزا</li><li>پروفایل و Subscription</li><li>تست اتصال کلاینت‌ها</li><li>پایش مصرف و خطا</li></ul></article>
+          <article class="surface-card roadmap-card"><span class="step-number">فاز ۰۳</span><h2>تجاری‌سازی</h2><span class="pill pending">وابسته به تصمیم پرداخت</span><ul><li>تأیید پرداخت سمت سرور</li><li>اتصال واقعی API و n8n</li><li>مدیریت فعال‌سازی و تمدید</li><li>تست ۵۰، ۲۰۰ و ۵۰۰ کاربر</li><li>بررسی بودجه و هزینه واقعی</li></ul></article>
+        </div>
+      </section>
+      <section id="history" class="panel-section" aria-labelledby="history-title">
+        <div class="intro"><div><div class="eyebrow">ENGINEERING JOURNAL</div><h1 id="history-title">تاریخچه پروژه</h1><p>خلاصه فعالیت‌های ثبت‌شده؛ فایل HISTORY.md در GitHub مرجع اصلی و کامل است.</p></div><a class="primary-link" href="https://github.com/javad-hasani/other/blob/main/v2ray-500/HISTORY.md" target="_blank" rel="noopener noreferrer">مشاهده HISTORY.md ↗</a></div>
+        <div id="history-entries" class="history-timeline" aria-live="polite"></div>
+      </section>
+      <section id="sources" class="panel-section" aria-labelledby="sources-title">
+        <div class="intro"><div><div class="eyebrow">REPOSITORY</div><h1 id="sources-title">منابع و فایل‌ها</h1><p>مستندات، SQL، تست‌ها و پروژه‌های اصلی که مبنای استقرار خواهند بود.</p></div></div>
+        <div class="source-grid">
+          <a href="https://github.com/javad-hasani/other/blob/main/v2ray-500/HISTORY.md" target="_blank" rel="noopener noreferrer"><span>MD</span><div><strong>HISTORY.md</strong><small>تاریخچه ماندگار و تصمیم‌های پروژه</small></div><b>↗</b></a>
+          <a href="https://github.com/javad-hasani/other/blob/main/v2ray-500/docs/architecture.md" target="_blank" rel="noopener noreferrer"><span>MD</span><div><strong>architecture.md</strong><small>مرزهای سرویس و ساختار سرورها</small></div><b>↗</b></a>
+          <a href="https://github.com/javad-hasani/other/blob/main/v2ray-500/docs/n8n-automation.md" target="_blank" rel="noopener noreferrer"><span>MD</span><div><strong>n8n-automation.md</strong><small>قرارداد API، پرداخت و خطا</small></div><b>↗</b></a>
+          <a href="https://github.com/javad-hasani/other/blob/main/v2ray-500/db/migrations/001_capacity_guard.sql" target="_blank" rel="noopener noreferrer"><span>SQL</span><div><strong>001_capacity_guard.sql</strong><small>محدودیت تراکنشی ۵۰۰ اشتراک</small></div><b>↗</b></a>
+          <a href="https://github.com/javad-hasani/other/blob/main/v2ray-500/tests/test_capacity.py" target="_blank" rel="noopener noreferrer"><span>PY</span><div><strong>test_capacity.py</strong><small>تست رقابت هم‌زمان و تکرار سفارش</small></div><b>↗</b></a>
+          <a href="https://github.com/javad-hasani/other/blob/main/v2ray-500/docker-compose.lab.yml" target="_blank" rel="noopener noreferrer"><span>YML</span><div><strong>docker-compose.lab.yml</strong><small>آزمایشگاه PostgreSQL محلی</small></div><b>↗</b></a>
+          <a href="https://github.com/javad-hasani/other/actions" target="_blank" rel="noopener noreferrer"><span>CI</span><div><strong>GitHub Actions</strong><small>نتایج صحت‌سنجی کد و دیتابیس</small></div><b>↗</b></a>
+          <a href="https://github.com/javad-hasani/other/blob/main/v2ray-500/config/upstream.lock" target="_blank" rel="noopener noreferrer"><span>PIN</span><div><strong>upstream.lock</strong><small>Commit SHA نسخه‌های مرجع</small></div><b>↗</b></a>
+        </div>
+        <h2 class="subheading">مخزن‌های مرجع</h2>
+        <div class="upstreams">
+          <a href="https://github.com/remnawave/backend" target="_blank" rel="noopener noreferrer">Remnawave Backend <small>Control Plane</small><b>↗</b></a>
+          <a href="https://github.com/remnawave/node" target="_blank" rel="noopener noreferrer">Remnawave Node <small>Xray Data Plane</small><b>↗</b></a>
+          <a href="https://github.com/BEDOLAGA-DEV/remnawave-bedolaga-telegram-bot" target="_blank" rel="noopener noreferrer">Bedolaga Bot <small>Sales / Telegram</small><b>↗</b></a>
+          <a href="https://github.com/Capybara-z/RemnaSetup" target="_blank" rel="noopener noreferrer">RemnaSetup <small>Optional Installer</small><b>↗</b></a>
+        </div>
+      </section>
+      <footer>XRAY-500 · Read-only project portal · Not a running VPN service <span>GitHub / Vercel</span></footer>
+    </main>
+  </div>
+</div>
+</body>
+</html>
