@@ -1,68 +1,57 @@
-# Architecture — V2Ray-500 / pre-deployment
+# Architecture — ShahPanel primary / Remnawave / Xray
 
-## Goals
+**Status: planned only. Binding decision [ADR-003](ADR-003-shahpanel-selection.md).**
 
-- Up to **500 active entitled subscriptions**; concurrent sessions **not guaranteed**.
-- Phased user intake: **50 → 200 → 500**.
-- Estimated total data: **15 TB/month** (planning only: 30 GB/user/month).
-- Maximum monthly **infrastructure** cost: **15,000,000 toman**; verify exchange rates, egress, taxes and plan stock before purchase.
-- Minimize blast radius: **company/SFIORD production is NOT a deployment target**.
-
-## Trust boundaries and data flow
+## Production topology (three proposed VPS)
 
 ```mermaid
 flowchart TB
-    U[Client apps] -->|subscription over HTTPS| CP[Control plane: Remnawave]
-    U -->|VLESS transport| N1[Node 1: Xray]
-    U -->|VLESS transport| N2[Node 2: Xray]
-    P[Payment provider] --> V[Independent payment verifier]
-    V -->|trusted signed internal event| W[n8n orchestration]
-    W -->|atomic reserve / renew| G[(Provisioning PostgreSQL)]
-    W -->|API / retry| CP
-    CP -->|authenticated node control| N1
-    CP -->|authenticated node control| N2
-    CP --- DB[(Remnawave PostgreSQL + Valkey)]
-    G --> M[Auditing / reconciliation]
-    N1 --> M
-    N2 --> M
+   Client[Customers / Persian web portal] -->|HTTPS| SP[ShahPanel: Laravel/PHP]
+   PSP[Zarinpal or approved payment PSP] -->|verified payment callback| SP
+   SP -->|orders / wallets| MYSQL[(ShahPanel MySQL 8)]
+   SP -->|authenticated Remnawave v3 API| RW[Remnawave Backend]
+   RW --> PG[(Remnawave PostgreSQL + Valkey)]
+   RW -->|management link| N1[Xray Node 1]
+   RW -->|management link| N2[Xray Node 2]
+   Client -->|VLESS subscriptions| N1
+   Client -->|VLESS subscriptions| N2
 ```
 
-**Database boundary:** `provisioning` is a **separate** database/schema owned by the billing integration. Do not apply our SQL migration to Remnawave's internal database. Remnawave is the source of truth for actual remote enablement; provisioning records must be reconciled with it.
+**Single commerce owner:** ShahPanel MySQL. Remnawave maintains actual remote VPN user/subscription status. No separate Minishop, n8n billing system or our experimental PostgreSQL `provisioning` schema in production.
 
-## Logical servers
+| Server | Proposed service | Notes |
+|---|---|---|
+| control-01 | ShahPanel + its MySQL, plus isolated Remnawave Backend + its PostgreSQL/Valkey | Feasible only **after** measured CPU/RAM/storage contention, secure TLS/isolation/backups |
+| node-01 | Remnawave Node + Xray | Customer traffic; independent remote IP |
+| node-02 | Remnawave Node + Xray | Customer traffic; test real failover and provider outage |
 
-| VPS | Services | Public inbound | Restricted inbound |
-|---|---|---|---|
-| control-01 | Remnawave backend, PostgreSQL, Valkey, optional n8n and reverse proxy | 443/TCP for required HTTPS endpoints | SSH from operator network only; 3000/3001/5432 internal |
-| node-01 | Remnawave Node, Xray, reverse proxy as designed | designated Xray transport TCP/UDP only | authenticated management channel, SSH allowlisted |
-| node-02 | identical to node-01 | designated transport only | authenticated management channel, SSH allowlisted |
+ShahPanel and Remnawave should not share a database. Backend/admin/DB and node management ports must not be exposed openly; use least privilege, allowlists/private links, strong credentials, encrypted backups and monitoring.
 
-**Avoid conflating** Node management port and public VLESS inbound port. Exact ports, certificates and TLS/SNI settings must be selected from a tested Remnawave profile and official documentation.
+## Capacity and cost
 
-### Why two nodes
-- Two distinct public endpoints let clients choose another route if one fails.
-- Two nodes on one provider do not solve provider-wide blocking or outages; independent regions/providers may be needed.
-- Client-side automatic failover is app-dependent; validate on target Android/iOS/Windows clients.
+- Hard limit: **500 active paid entitlements**, stage **50 → 200 → 500**.
+- Planning: 30GB/month × 500 = **15TB/month** total; simultaneous activity unknown.
+- Infrastructure ceiling **15,000,000 toman/month**; no live price/capacity guarantee.
+- ShahPanel is PHP/MySQL; Remnawave requires its own runtime/DB; do not apply the unrelated Postgres proof to either database.
+- **Required implementation gate:** inspect ShahPanel for native global active-entitlement caps. If absent, patch its existing MySQL purchase/provisioning transaction atomically. Prevent paid-but-unfulfilled orders and duplicate callbacks. Only release a seat after remote user is disabled.
 
-## Capacity / seat management
+## Operational/business flow
 
-The real limit is enforced in PostgreSQL function `provisioning.reserve()` using a transaction advisory lock. Every `reserved`, `provisioning`, `active`, and `deactivating` state consumes a seat; a seat is only freed when remote deactivation is independently confirmed and state becomes `released`.
+1. Customer chooses Persian package in ShahPanel portal.
+2. ShahPanel starts domestic PSP transaction; **confirms with provider server-side**, not browser claims.
+3. Existing ShahPanel sale/account transaction checks global capacity and reserve/fulfillment.
+4. ShahPanel calls authenticated Remnawave API to create or update one remote user with proper Internal Squad.
+5. Subscription link served to customer, expiry/renewal tracked by ShahPanel; background sync/reconciliation with Remnawave must be proven.
+6. Refund, timeout or remote failure: do not duplicate entitlement; audit and reconcile before confirming delivery.
 
-- Initial staged limit: 50, later 200, absolute maximum 500 (DB constraint).
-- Concurrent attempts serialize and cannot allocate 501 seats if app role has no direct table DML.
-- Renewals are not counted as new subscriptions.
-- Failed payments must never produce a reservation.
-- Paid orders declined at capacity require a refund/waitlist flow and human notification.
+No part of this flow has been run in our own environment yet.
 
-This SQL is **one building block**. Before go-live, implement auditable capacity-gate authorization and reconciliation with Remnawave to prevent drift.
+## Security and go/no-go
 
-## Reliability goals (must be proven before increasing stage)
+- Review AGPL-3.0-or-later obligations, ShahPanel root installer, update scripts, payment and auth handling.
+- Validate Persian RTL on mobile and desktop and exact rial/toman conversions.
+- Verify real Remnawave 3.x API creation/renewal/suspension and node status with isolated test data.
+- Check automated backups *and restore* for both databases, node-offline alerts and private key isolation.
+- Ramp 50 → 200 → 500 only after load test, latency and costs stay within limits.
 
-- 50 users: full provisioning, connection success and usable client configs.
-- 200 users: p95 latency, node throughput, CPU steal and per-node traffic quotas.
-- 500 users: successful load test, backups, alerting, billing reconciliation and monthly cost forecast remain within limit.
-- Any failed real-world canary pauses onboarding; do not auto-grow without manual go/no-go approval.
-
-## Known blockers
-
-VPSs, real domain names, validated Xray config, payment gateway choice, admin SSH credentials (never in Git), actual abuse policy, real-client tests, backup target and release pinning.
+Refer to [staging runbook](shahpanel-staging-runbook.md) for steps.
