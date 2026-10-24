@@ -1,43 +1,36 @@
-# Production rollout checklist — 500 active subscriptions
+# Production acceptance checklist — ShahPanel / Remnawave
 
-## Prerequisites
-- [ ] Ownership/administrative access to three VPS (control plane, node-1, node-2)
-- [ ] Three valid DNS records; HTTPS certificates
-- [ ] SSH keys only; firewall restricting admin and database ports
-- [ ] External encrypted backups, tested restore and operational contact
-- [ ] Reviewed/pinned vendor revisions and security/abuse policy
+**None of these operational acceptance checks are complete.** See [ADR-003](ADR-003-shahpanel-selection.md).
 
-## Control plane
-- [ ] Deploy `remnawave/backend` per official docs, including Postgres and Valkey
-- [ ] Ensure reverse proxy/TLS and subscription endpoint work
-- [ ] Public PostgreSQL, metrics and administrative backends blocked
-- [ ] Credentials generated and stored in external secret manager
-- [ ] Configure health monitoring and recoverability tests
+## Before acquiring VPS
+- [ ] Verify source of ShahPanel v3.38.5 and license/AGPL network-access obligations
+- [ ] Review installer `install.sh`, security advisories, dependencies, auth/payment code
+- [ ] Decide domains, backup destination and independent Xray node host locations
+- [ ] Provider acceptable-use policy, quota and total monthly infrastructure cost <= 15M toman
+- [ ] Establish secure staging SSH keys, admin access policy and incident contact
 
-## Nodes
-- [ ] Provision node-1 and node-2 in separate failure domains when practical
-- [ ] Register both nodes in Remnawave, verify authenticated communication
-- [ ] Validate real client connection, speed, latency, bandwidth counters
-- [ ] Test behavior when one node is unavailable; failover is client-dependent
+## ShahPanel (commercial admin)
+- [ ] Install ShahPanel on isolated staging Ubuntu with PHP >=8.2 / Laravel 11 / MySQL 8
+- [ ] Persian RTL admin + client/reseller routes validated across devices
+- [ ] Fresh MySQL credentials; TLS/HTTP security headers/TOTP and restricted admin path
+- [ ] Zarinpal sandbox verification: IRR vs IRT, duplicate callbacks, invalid authority and refund
+- [ ] Confirm exact active-paid-entitlement count in ShahPanel, not merely registered identities
+- [ ] Atomically reject 501st **active** account even under competing orders
+- [ ] Renew existing subscriptions without reserving a second seat
+- [ ] Restore and verify ShahPanel MySQL database backups
 
-## Business automation
-- [ ] Decide Telegram (Bedolaga) vs Bale / web checkout
-- [ ] Iranian payment gateway adapter, server-side signature check, fraud and retry handling
-- [ ] Atomic hard cap 500 ACTIVE subscriptions; apply cap before provisioning
-- [ ] Per-payment idempotency key and reconciliation queue; fail closed on DB outage
-- [ ] Create/renew/suspend only from verified paid orders; audit each action
-- [ ] Expiry, quotas, traffic reset, notification integration
+## Remnawave/Xray
+- [ ] Install official Remnawave backend with isolated Postgres/Valkey
+- [ ] Keep management API/admin/database ports private or explicitly allowlisted
+- [ ] Register Node 1, confirm authenticated communication and real client subscription
+- [ ] Integrate ShahPanel v3.x API: create, update, Internal Squad, suspend and quota
+- [ ] Register Node 2 separately; verify behavior of client on Node 1 loss
+- [ ] Test egress allowance, error rates, CPU, latency, health and monitoring
+- [ ] Restore and verify Remnawave PostgreSQL backups separately
 
-## Canary gates
-- [ ] 50 users: validate app compatibility, connection success, support workflow
-- [ ] 200 users: measure per-node CPU, p95 latency, errors, traffic and VPS quotas
-- [ ] 500 users: allow only if capacity and budget comfortably cover actual demand
-- [ ] Explicit rollback and incident checklist
-
-## Acceptance
-- [ ] Successful end-to-end creation, activation, connection, usage, expiry and renewal
-- [ ] 501st **active** account creation rejected, concurrent provisioning does not overrun cap
-- [ ] No duplicate subscriptions on retry / duplicate payment webhook
-- [ ] Failover tested and documented, backups restored in test environment
-- [ ] Monitoring + alerts active; no private credentials committed
-- [ ] Cost remains <= 15,000,000 toman/month based on actual invoices and FX
+## Real customer go/no-go
+- [ ] Audit/reconcile verified paid order to remote active user; no duplicated entitlements
+- [ ] Repeat callbacks and failed remote provision never charge/deliver twice
+- [ ] Proven safe refunds, account expiry, remote disable and released-capacity semantics
+- [ ] Canary 50 connections, then 200, then 500 subscriptions after measured results
+- [ ] Business checkout enabled only after manager signoff and security validation
