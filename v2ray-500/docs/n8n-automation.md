@@ -1,3 +1,7 @@
+> **ARCHIVED DESIGN SPIKE ONLY.** The selected commercial platform is ShahPanel (Laravel/MySQL). No n8n purchase, payment, renewal or subscription workflow is in the selected stack. See [ADR-003](ADR-003-shahpanel-selection.md); do not deploy this plan.
+
+---
+
 # n8n automation contracts — implementation-ready design, NOT deployed
 
 ## Boundaries
