@@ -1,6 +1,6 @@
 # ADR-002 — Persian-first storefront evaluation (2026-10-24)
 
-Status: **EVALUATION PRIORITY UPDATED — NO PRODUCTION SWITCH OR DEPLOYMENT**.
+Status: **SUPERSEDED BY [ADR-003](ADR-003-shahpanel-selection.md) on 2026-10-24**. Historical evaluation only; ShahPanel is now the chosen commerce stack for staging, not yet deployed.
 Supersedes the assumption in ADR-001 that Minishop needs only a small localization gap. Keeps ADR-001 as a historical decision.
 
 ## Trigger
