@@ -1,6 +1,6 @@
-# SELECTED candidate release commits, 2026-10-23; source-review ONLY.
-# Not a dependency security audit or cross-project compatibility guarantee.
-# Columns: folder-name<TAB>HTTPS GitHub URL<TAB>exact Git commit SHA
-remnawave-minishop	https://github.com/3252a8/remnawave-minishop.git	0fe3ac3abba160517538cc86e812e655d46fe55a
+# Approved source candidates for offline/staging evaluation — 2026-10-24.
+# Exact Git commit SHA (not a compatibility, licensing or security certificate).
+# folder<TAB>HTTPS GitHub source<TAB>git commit SHA
+shahpanel	https://github.com/shahinst/shahpanel.git	e898e84999779fd105a3e948a95ced3f44db9df1
 remnawave-backend	https://github.com/remnawave/backend.git	52321390ac4efe04a610811446d87335f1d10a93
 remnawave-node	https://github.com/remnawave/node.git	2ad154f8f1016c94c1872f337268af878af61b18
