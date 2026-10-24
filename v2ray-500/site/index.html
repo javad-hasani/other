@@ -48,7 +48,7 @@
     <main class="main">
       <section id="overview" class="panel-section current" aria-labelledby="overview-title">
         <div class="intro">
-          <div><div class="eyebrow">PROJECT / XRAY-500</div><h1 id="overview-title">مرکز کنترل پروژه</h1><p>مسیر فعلی: بررسی فروشگاه فارسی آماده ShahPanel در کنار Minishop و هسته Remnawave.</p></div>
+          <div><div class="eyebrow">PROJECT / XRAY-500</div><h1 id="overview-title">مرکز کنترل پروژه</h1><p>مسیر منتخب: شاه‌پنل فارسی برای فروش و مدیریت کاربران، Remnawave برای سرویس‌دهی و دو Xray Node.</p></div>
           <span class="phase-tag"><span class="status-pulse"></span> مرحله آماده‌سازی</span>
         </div>
         <div class="notice"><span class="notice-icon">ⓘ</span><div><strong>این داشبورد پیش‌نمایش است، نه پنل زنده VPN.</strong><p>اطلاعات این صفحه از مستندات پروژه تهیه شده‌اند. هیچ VPS، سرویس Xray یا API پرداختی به این وب‌سایت متصل نیست.</p></div></div>
@@ -78,7 +78,7 @@
         </div>
         <div class="section-row"><h2>مسیرهای سریع</h2><span>Repository / Documentation</span></div>
         <div class="quick-grid">
-          <a class="quick-card" href="#history"><span class="quick-icon">◷</span><strong>تاریخچه مهندسی</strong><small>تصمیم‌ها و تغییرات H001 تا H015</small><span class="quick-arrow">↖</span></a>
+          <a class="quick-card" href="#history"><span class="quick-icon">◷</span><strong>تاریخچه مهندسی</strong><small>تصمیم‌ها و تغییرات H001 تا H016</small><span class="quick-arrow">↖</span></a>
           <a class="quick-card" href="#architecture"><span class="quick-icon">⬡</span><strong>معماری زیرساخت</strong><small>Control Plane + 2 Xray Nodes</small><span class="quick-arrow">↖</span></a>
           <a class="quick-card" href="#sources"><span class="quick-icon">⌘</span><strong>کد و مستندات</strong><small>SQL، تست، Docker Lab و CI</small><span class="quick-arrow">↖</span></a>
         </div>
@@ -93,7 +93,7 @@
           <div class="diagram-connect">↕ پیکربندی و مدیریت</div>
           <div class="diagram-box control"><span>⬡</span><strong>Remnawave Control Plane</strong><small>PostgreSQL + Valkey · اجرا نشده</small></div>
           <div class="diagram-connect">↕ REST API</div>
-          <div class="node-pair"><div class="diagram-box business"><span>◈</span><strong>Shop Candidate</strong><small>ShahPanel / Minishop · هنوز انتخاب نهایی نشده</small></div><div class="diagram-box business"><span>⌘</span><strong>Custom Experiments</strong><small>n8n / SQL فقط در صورت نیاز اثبات‌شده</small></div></div>
+          <div class="node-pair"><div class="diagram-box business"><span>◈</span><strong>ShahPanel · فارسی</strong><small>Laravel + MySQL · فروش، کیف پول، پرداخت</small></div><div class="diagram-box business"><span>⌘</span><strong>Custom Experiments</strong><small>n8n / SQL فقط در صورت نیاز اثبات‌شده</small></div></div>
         </div>
         <div class="quick-grid">
           <div class="quick-card static"><strong>Control Plane</strong><small>مدیریت اشتراک و وضعیت Nodeها. باید روی VPS همیشه‌روشن اجرا شود.</small></div>
@@ -104,9 +104,9 @@
       <section id="roadmap" class="panel-section" aria-labelledby="roadmap-title">
         <div class="intro"><div><div class="eyebrow">DELIVERY PLAN</div><h1 id="roadmap-title">نقشه راه</h1><p>کارهای تکمیل‌شده و موارد وابسته به تهیه زیرساخت.</p></div></div>
         <div class="roadmap-grid">
-          <article class="surface-card roadmap-card"><span class="step-number">فاز ۰۱</span><h2>مهندسی پیش از سرور</h2><span class="pill done">تکمیل مستندات و تست‌های اولیه</span><ul><li>GitHub + HISTORY دائمی</li><li>مهاجرت SQL کنترل ظرفیت</li><li>تست CI با PostgreSQL آزمایشی</li><li>ارزیابی ShahPanel فارسی و Minishop برای بازار ایران</li><li>فایل‌های آزمایش Docker</li></ul></article>
+          <article class="surface-card roadmap-card"><span class="step-number">فاز ۰۱</span><h2>مهندسی پیش از سرور</h2><span class="pill done">تکمیل مستندات و تست‌های اولیه</span><ul><li>GitHub + HISTORY دائمی</li><li>مهاجرت SQL کنترل ظرفیت</li><li>تست CI با PostgreSQL آزمایشی</li><li>انتخاب شاه‌پنل فارسی و قفل نسخه مرجع سورس</li><li>فایل‌های آزمایش Docker</li></ul></article>
           <article class="surface-card roadmap-card"><span class="step-number">فاز ۰۲</span><h2>استقرار زیرساخت</h2><span class="pill pending">در انتظار VPS و دامنه</span><ul><li>سرور پنل با TLS و Backup</li><li>دو Xray Node مجزا</li><li>پروفایل و Subscription</li><li>تست اتصال کلاینت‌ها</li><li>پایش مصرف و خطا</li></ul></article>
-          <article class="surface-card roadmap-card"><span class="step-number">فاز ۰۳</span><h2>تجاری‌سازی</h2><span class="pill pending">وابسته به تصمیم پرداخت</span><ul><li>تأیید پرداخت سمت سرور</li><li>استفاده از فروشگاه آماده منتخب و تکمیل خلأها</li><li>مدیریت فعال‌سازی و تمدید</li><li>تست ۵۰، ۲۰۰ و ۵۰۰ کاربر</li><li>بررسی بودجه و هزینه واقعی</li></ul></article>
+          <article class="surface-card roadmap-card"><span class="step-number">فاز ۰۳</span><h2>تجاری‌سازی</h2><span class="pill pending">وابسته به تصمیم پرداخت</span><ul><li>تأیید پرداخت سمت سرور</li><li>تست شاه‌پنل آماده و تکمیل خلأهای واقعی</li><li>مدیریت فعال‌سازی و تمدید</li><li>تست ۵۰، ۲۰۰ و ۵۰۰ کاربر</li><li>بررسی بودجه و هزینه واقعی</li></ul></article>
         </div>
       </section>
       <section id="history" class="panel-section" aria-labelledby="history-title">
@@ -126,9 +126,9 @@
           <a href="https://github.com/javad-hasani/other/blob/main/v2ray-500/config/upstream.lock" target="_blank" rel="noopener noreferrer"><span>PIN</span><div><strong>upstream.lock</strong><small>Commit SHA نسخه‌های مرجع</small></div><b>↗</b></a>
         </div>
         <h2 class="subheading">مخزن‌های مرجع</h2>
-        <div class="notice"><span class="notice-icon">ⓘ</span><div><strong>محصول در حال ارزیابی: ShahPanel فارسی، Minishop جایگزین</strong><p>فروشگاه منتخب پس از تست امنیت، پرداخت و اتصال انتخاب می‌شود؛ هیچ پنل تجاری عملیاتی فعال نیست. <a href="https://github.com/javad-hasani/other/blob/main/v2ray-500/docs/ADR-002-persian-first.md" target="_blank" rel="noopener noreferrer">جزئیات تصمیم ↗</a></p></div></div>
+        <div class="notice"><span class="notice-icon">ⓘ</span><div><strong>محصول منتخب برای تست: شاه‌پنل فارسی</strong><p>شاه‌پنل در برنامه پروژه جایگزین Minishop شده است، اما نصب و تست عملیاتی انجام نشده و درگاه پرداخت فعال نیست. <a href="https://github.com/javad-hasani/other/blob/main/v2ray-500/docs/ADR-003-shahpanel-selection.md" target="_blank" rel="noopener noreferrer">جزئیات تصمیم ↗</a></p></div></div>
         <div class="upstreams">
-          <a href="https://github.com/shahinst/shahpanel" target="_blank" rel="noopener noreferrer">ShahPanel <small>Persian-first candidate</small><b>↗</b></a>
+          <a href="https://github.com/shahinst/shahpanel" target="_blank" rel="noopener noreferrer">ShahPanel <small>Primary Commerce / Admin</small><b>↗</b></a>
           <a href="https://github.com/remnawave/backend" target="_blank" rel="noopener noreferrer">Remnawave Backend <small>Control Plane</small><b>↗</b></a>
           <a href="https://github.com/remnawave/node" target="_blank" rel="noopener noreferrer">Remnawave Node <small>Xray Data Plane</small><b>↗</b></a>
           <a href="https://github.com/BEDOLAGA-DEV/remnawave-bedolaga-telegram-bot" target="_blank" rel="noopener noreferrer">Bedolaga Bot <small>Sales / Telegram</small><b>↗</b></a>
