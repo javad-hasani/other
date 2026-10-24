@@ -12,6 +12,8 @@ paths = [
     'HISTORY.md', 'README.md', 'config/upstream.lock',
     'db/migrations/001_capacity_guard.sql',
     'tests/test_capacity.py', 'docs/ADR-001-commerce-stack.md',
+    'docs/ADR-002-persian-first.md', 'docs/ADR-003-shahpanel-selection.md',
+    'docs/shahpanel-staging-runbook.md',
     'docs/architecture.md',
     'docs/n8n-automation.md', 'docs/security-and-release.md',
 ]
@@ -24,8 +26,9 @@ rows = [
 ]
 assert len(rows) == 3, 'Expected 3 pinned selected upstreams'
 assert all(len(r) == 3 and re.fullmatch(r'[0-9a-f]{40}', r[2]) for r in rows)
-assert {r[0] for r in rows} == {'remnawave-minishop', 'remnawave-backend', 'remnawave-node'}
-assert all('bedolaga' not in r[1].lower() for r in rows)
+assert {r[0] for r in rows} == {'shahpanel', 'remnawave-backend', 'remnawave-node'}
+assert all('bedolaga' not in r[1].lower() and 'minishop' not in r[1].lower() for r in rows)
+assert any(r[0] == 'shahpanel' and r[2] == 'e898e84999779fd105a3e948a95ced3f44db9df1' for r in rows)
 assert 'hard_max = 500' in Path('db/migrations/001_capacity_guard.sql').read_text()
 print('PASS: offline preflight, pinned source manifest, files and SQL cap')
 PY
