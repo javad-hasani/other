@@ -1,91 +1,71 @@
-# Xray-500 — reuse-first commercial rollout
+# XRAY-500 — ShahPanel + Remnawave
 
-> **STAGING PLANNING ONLY — NO VPS / NO ACTIVE VPN / NO LIVE PAYMENT / NO VERCEL PRODUCTION LINK**.
->
-> **Decisions and completed evidence:** [HISTORY.md](HISTORY.md). **Current evaluation priority:** [ADR-002 — Persian-first](docs/ADR-002-persian-first.md), after [ADR-001 — Minishop assessment](docs/ADR-001-commerce-stack.md). Read HISTORY and ADR-002 before any change.
+> **State: source selection/configuration complete; no VPS, live ShahPanel, real VPN, live payment or deployed Vercel website.** Read [HISTORY.md](HISTORY.md) before every change.
 
-## Official Minishop admin UI preview — Russian/English demo, NOT Persian
+## Current product stack (ADR-003)
 
-**[Open official Minishop admin demo (Users)](https://minishop.minidoc.cc/demo/admin/users/)**
-
-This is the upstream project's **static mock-data demo**, not an authenticated live instance, not our Vercel deployment, and not linked to a production Remnawave panel. The maintainer's documentation explicitly says that it renders Mini App/customer and web-admin routes without a backend, database or external API: https://minishop.minidoc.cc/getting-started/overview/ .
-
-For an **actual local** Minishop + Remnawave test instance, the maintainer provides a Docker-based dev stand: https://minishop.minidoc.cc/development/dev-stand/ . It requires Docker on an operator machine; frontend is documented at http://127.0.0.1:18082 and panel at http://127.0.0.1:3000. **No local stack was started by ChatGPT** (no Docker host or VPS attached).
-
-## Iran-first candidate review (no final winner yet)
-
-Our project is NOT a new Xray or subscription billing application. **Reuse maintained software and patch only demonstrable gaps.**
-
-| Layer | Selected primary upstream | Status |
+| Layer | Primary component | Role |
 |---|---|---|
-| Web storefront, customer cabinet, admin, subscriptions/payments | [ShahPanel](https://github.com/shahinst/shahpanel) **AGPL**, Persian + Zarinpal + Remnawave; [Minishop](https://github.com/3252a8/remnawave-minishop) **MIT** as web-first fallback | **ShahPanel evaluation first**, NOT deployed or approved |
-| Account & Node control plane | [Official Remnawave backend](https://github.com/remnawave/backend) | Not deployed |
-| Traffic relays | 2 × [Official Remnawave Nodes](https://github.com/remnawave/node) | Not deployed |
-| Vercel | Optional status/landing site prototype in [site/](site/) | **Vercel team access blocked**, not live |
-| n8n / custom SQL guard | Experimental fallback references only ([docs](docs/n8n-automation.md), [db](db/README.md)) | **NOT part of selected MVP** |
+| Sales, Persian admin/customer portals, wallet, orders, invoices | **[ShahPanel](https://github.com/shahinst/shahpanel)** | Laravel 11, PHP 8.2+, **MySQL 8**; built-in `fa` and Zarinpal implementation |
+| Subscription & VPN control plane | **[Remnawave Backend](https://github.com/remnawave/backend)** | Official panel, private PostgreSQL + Valkey |
+| Two independent Xray traffic endpoints | **[Remnawave Node](https://github.com/remnawave/node)** × 2 | Client network traffic |
+| Static site prototype | `site/` | Optional read-only Vercel status/landing page, **not the admin panel** |
 
-**Language correction (2026-10-24):** official Remnawave core panel already supports Persian. Minishop base locales are English/Russian; translations UI can register extra \`fa\` locale but does not automatically translate/RTL the app. ShahPanel comes with Persian locale files and implemented Zarinpal integration. See [ADR-002](docs/ADR-002-persian-first.md) for evidence, license tradeoffs and blockers.\n\nMinishop supports registration via email and web-based admin without Telegram (read its [no-Telegram guide](https://github.com/3252a8/remnawave-minishop/blob/main/docs/features/telegram-optional.md)). **Bedolaga is NOT selected:** its LICENSE contains Commons Clause restricting commercial service resale, despite short README MIT text. Alternative [STEALTHNET](https://github.com/STEALTHNET-APP/remnawave-STEALTHNET-Bot) requires an independent security/license fit review.
+**Minishop is no longer in the selected source lock or active deployment plan.** It remains documented as the historic alternative in [ADR-001](docs/ADR-001-commerce-stack.md), [ADR-002](docs/ADR-002-persian-first.md) and its archived runbook. Bedolaga is also excluded due to LICENSE commercial restrictions pending legal review.
 
-### Business constraints
+### Baseline source revisions (pinned for staging, NOT tested together)
 
-- Absolute cap **500 paid active entitlements**, including staged intake **50 → 200 → 500**, not 500 simultaneous sessions.
-- Infrastructure OPEX ceiling **15,000,000 toman/month**; provider traffic/FX and invoices not yet confirmed.
-- Planning usage: 30 GB/entitlement/month × 500 = 15 TB/month, benchmark before accepting 500.
-- All project infrastructure must remain completely separate from SFIORD company systems and credentials.
+- **ShahPanel v3.38.5:** `e898e84999779fd105a3e948a95ced3f44db9df1` (2026-10-17)
+- **Remnawave Backend 3.4.7:** `52321390ac4efe04a610811446d87335f1d10a93`
+- **Remnawave Node 3.4.3:** `2ad154f8f1016c94c1872f337268af878af61b18`
 
-### Development rules
+These Git references were checked against published release tags; see [source lock](config/upstream.lock). ShahPanel carries **AGPL-3.0-or-later**; read its source-availability requirements if modifying the hosted app.
 
-1. Search upstream settings and modules, then test them **before** designing a new component.
-2. Keep one commerce database and one entitlement lifecycle owner (Minishop). **Do not** run duplicate n8n checkout or custom billing database.
-3. Only add verified missing capabilities, probably Iranian PSP, Persian UX and true atomic 500-active seat cap. **None is implemented/integrated yet**.
-4. No real credentials, users or payment details in this public repository.
-5. Record **تصور / شاهد / تصمیم / اقدام / تست / مرحله بعد** in [HISTORY.md](HISTORY.md) after every material change.
-6. Stage first, then trial with 50 real users and measured go/no-go gates.
+## Fixed business constraints
 
-## Safe pre-server work
+- Maximum **500 active paid subscriptions** (NOT necessarily 500 simultaneous users).
+- Controlled capacity ramp: **50 → 200 → 500**, dependent on measured performance.
+- Infrastructure budget ceiling **15,000,000 tomans/month**, including traffic, backup and operational allowances (prices not verified).
+- Usage planning assumption: 30GB per subscribed user/month = 15TB total at 500 users, not a guarantee.
+- Strict isolation from SFIORD company infrastructure and customer records.
+
+## Prepare source on local/deployment machine (safe offline commands)
 
 ```bash
 git clone https://github.com/javad-hasani/other.git
 cd other/v2ray-500
 bash scripts/preflight.sh
 bash scripts/fetch-upstream.sh
+cat vendor/UPSTREAM-COMMITS.txt
 ```
 
-These scripts only validate the workspace and **clone exactly pinned upstream source commits** into ignored `vendor/`. They do not deploy containers, install software, call a payment provider or touch remote servers.
+The fetch script only clones pinned source revisions under ignored `vendor/`. **No install script is executed.** Never put `.env`, API keys, payment details or customer data into this public repository.
 
-Current reviewed release snapshot (2026-10-23):
-- Minishop **v3.8.3** (`0fe3ac3abba160517538cc86e812e655d46fe55a`)
-- Remnawave Backend **3.4.7** (`52321390ac4efe04a610811446d87335f1d10a93`)
-- Remnawave Node **3.4.3** (`2ad154f8f1016c94c1872f337268af878af61b18`)
+## Delivery plan
 
-The versions are pinned for **reproducible evaluation**, not verified compatibility/security.
+- [x] Choose ShahPanel instead of Minishop; document rationale and AGPL considerations.
+- [x] Pin ShahPanel/Remnawave/Node source commits and update static project dashboard.
+- [x] Write [ShahPanel staging runbook](docs/shahpanel-staging-runbook.md) and [ADR-003](docs/ADR-003-shahpanel-selection.md).
+- [ ] Independently review source/dependencies/root installer and licenses.
+- [ ] Start isolated ShahPanel **Laravel/MySQL** test host.
+- [ ] Verify ShahPanel Persian/RTL and Zarinpal sandbox; test 500-active global cap and replay resistance.
+- [ ] Start official Remnawave staging backend + one node; test v3 API interoperability.
+- [ ] Secure backups/TLS, add second node; canary 50 → 200 → 500 only after measured gates.
+- [ ] Acquire VPS/domain and fix Vercel Team permissions if choosing to publish the *static* status site.
 
-## Required proof before buying services from customers
+**A passing synthetic PostgreSQL capacity test in this repository does not enforce the 500-person limit in ShahPanel.** Our legacy `db/` and `docs/n8n-automation.md` are **experimental archive only**. Implement any required cap inside ShahPanel's **existing MySQL sale/provisioning transaction** after auditing upstream features.
 
-- [x] Upstream candidates and licenses reviewed from primary repositories
-- [x] ShahPanel selected for **first Iran-first evaluation** (Minishop remains fallback; neither is security/production approved)
-- [x] Source revisions pinned and staging runbook written
-- [x] Previous experimental 500-seat SQL guard passed **disposable** PostgreSQL CI tests (NOT integrated in Minishop)
-- [ ] Independent license/security and dependency audit
-- [ ] Remnawave + Minishop web-only Docker integration tested
-- [ ] Iranian PSP chosen, validated and integrated if required
-- [ ] True atomic 500-active cap in actual Minishop checkout verified
-- [ ] Persian checkout and toman/rial correctness verified
-- [ ] 3 VPS and domains acquired, firewalls/TLS/backups in place
-- [ ] Real client connectivity/load tests, 50 → 200 → 500 phase sign-offs
+## Repository navigation
 
-## Project index
-
-- [HISTORY.md](HISTORY.md) — append-only engineering log; most important document
-- [ADR-002 — current Persian-first evaluation priority](docs/ADR-002-persian-first.md)\n- [ADR-001 — earlier Minishop-first evaluation, retained for historical comparison](docs/ADR-001-commerce-stack.md)
-- [Minishop staging runbook](docs/minishop-staging-runbook.md)
-- [Build versus reuse evaluation](docs/build-vs-reuse-review.md)
+- **[HISTORY.md](HISTORY.md)** — append-only records: assumption, evidence, decision, action, test, next.
+- **[ADR-003 — ShahPanel primary](docs/ADR-003-shahpanel-selection.md)** — authoritative architecture.
+- [Current ShahPanel staging runbook](docs/shahpanel-staging-runbook.md)
+- [Architecture and trust boundaries](docs/architecture.md)
+- [Production readiness checklist](docs/rollout-checklist.md)
 - [Pinned upstream sources](config/upstream.lock)
-- [Offline source preflight](scripts/preflight.sh)
-- [Read-only status dashboard prototype](site/)
-- [Earlier architecture sketch — experimental](docs/architecture.md)
-- [Earlier n8n orchestration — experimental, NOT selected](docs/n8n-automation.md)
-- [Earlier 500-seat SQL proof — isolated CI, NOT selected for production](db/README.md)
-- [Local disposable database lab](docs/local-lab.md)
+- [Fetch pinned source](scripts/fetch-upstream.sh) / [offline preflight](scripts/preflight.sh)
+- [Project status web prototype](site/)
+- Historical: [ADR-001 Minishop](docs/ADR-001-commerce-stack.md), [ADR-002 Persian review](docs/ADR-002-persian-first.md), [archived Minishop runbook](docs/minishop-staging-runbook.md)
+- Experiments NOT active: [PostgreSQL proof](db/README.md), [n8n orchestration](docs/n8n-automation.md).
 
-**Important:** GitHub or Vercel cannot host persistent Xray proxy Nodes; eventual customer website may be hosted separately, but the Remnawave/Minishop backend needs persistent infrastructure.
+**Do not claim this repository hosts the upstream ShahPanel code: it pins the upstream Git revision for reproducible cloning and installation.** It also does not deploy Xray on Vercel.
