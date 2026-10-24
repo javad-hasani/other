@@ -1,3 +1,7 @@
+> **ARCHIVED — historical Minishop alternative. NOT an active deployment plan.** The user switched the main product to ShahPanel on 2026-10-24. Follow [ShahPanel runbook](shahpanel-staging-runbook.md) and [ADR-003](ADR-003-shahpanel-selection.md). Do not use Minishop installation steps unless a new explicit architecture decision reactivates it.
+
+---
+
 # Minishop-first staging runbook (without VPS: preparation only)
 
 **State: instructions drafted; no installation, domain, processor, or external server available.**
