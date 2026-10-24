@@ -1,3 +1,7 @@
+> **ARCHIVED PostgreSQL EXPERIMENT — NOT PART OF SHAHPANEL.** ShahPanel uses **MySQL**. Never run these PostgreSQL migration/functions on ShahPanel or Remnawave databases. See [ADR-003](../docs/ADR-003-shahpanel-selection.md).
+
+---
+
 # Provisioning database
 
 This migration runs on a **dedicated PostgreSQL 16+ provisioning / billing integration database**, not the Remnawave product DB. It is a **database gate**, not the complete payment or Remnawave API integration.
