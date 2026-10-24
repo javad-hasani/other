@@ -2,9 +2,9 @@
 
 > **STAGING PLANNING ONLY — NO VPS / NO ACTIVE VPN / NO LIVE PAYMENT / NO VERCEL PRODUCTION LINK**.
 >
-> **Decisions and completed evidence:** [HISTORY.md](HISTORY.md). **Binding current architecture:** [ADR-001](docs/ADR-001-commerce-stack.md). Both are mandatory reading before any edit or deployment.
+> **Decisions and completed evidence:** [HISTORY.md](HISTORY.md). **Current evaluation priority:** [ADR-002 — Persian-first](docs/ADR-002-persian-first.md), after [ADR-001 — Minishop assessment](docs/ADR-001-commerce-stack.md). Read HISTORY and ADR-002 before any change.
 
-## Official admin UI preview — available now (not our instance)
+## Official Minishop admin UI preview — Russian/English demo, NOT Persian
 
 **[Open official Minishop admin demo (Users)](https://minishop.minidoc.cc/demo/admin/users/)**
 
@@ -12,19 +12,19 @@ This is the upstream project's **static mock-data demo**, not an authenticated l
 
 For an **actual local** Minishop + Remnawave test instance, the maintainer provides a Docker-based dev stand: https://minishop.minidoc.cc/development/dev-stand/ . It requires Docker on an operator machine; frontend is documented at http://127.0.0.1:18082 and panel at http://127.0.0.1:3000. **No local stack was started by ChatGPT** (no Docker host or VPS attached).
 
-## Final candidate for isolated evaluation
+## Iran-first candidate review (no final winner yet)
 
 Our project is NOT a new Xray or subscription billing application. **Reuse maintained software and patch only demonstrable gaps.**
 
 | Layer | Selected primary upstream | Status |
 |---|---|---|
-| Web storefront, customer cabinet, admin, subscriptions/payments | [Remnawave Minishop](https://github.com/3252a8/remnawave-minishop), **MIT**, web-only mode supported | **Chosen for staging evaluation**, not deployed |
+| Web storefront, customer cabinet, admin, subscriptions/payments | [ShahPanel](https://github.com/shahinst/shahpanel) **AGPL**, Persian + Zarinpal + Remnawave; [Minishop](https://github.com/3252a8/remnawave-minishop) **MIT** as web-first fallback | **ShahPanel evaluation first**, NOT deployed or approved |
 | Account & Node control plane | [Official Remnawave backend](https://github.com/remnawave/backend) | Not deployed |
 | Traffic relays | 2 × [Official Remnawave Nodes](https://github.com/remnawave/node) | Not deployed |
 | Vercel | Optional status/landing site prototype in [site/](site/) | **Vercel team access blocked**, not live |
 | n8n / custom SQL guard | Experimental fallback references only ([docs](docs/n8n-automation.md), [db](db/README.md)) | **NOT part of selected MVP** |
 
-Minishop supports registration via email and web-based admin without Telegram (read its [no-Telegram guide](https://github.com/3252a8/remnawave-minishop/blob/main/docs/features/telegram-optional.md)). **Bedolaga is NOT selected:** its LICENSE contains Commons Clause restricting commercial service resale, despite short README MIT text. Alternative [STEALTHNET](https://github.com/STEALTHNET-APP/remnawave-STEALTHNET-Bot) requires an independent security/license fit review.
+**Language correction (2026-10-24):** official Remnawave core panel already supports Persian. Minishop base locales are English/Russian; translations UI can register extra \`fa\` locale but does not automatically translate/RTL the app. ShahPanel comes with Persian locale files and implemented Zarinpal integration. See [ADR-002](docs/ADR-002-persian-first.md) for evidence, license tradeoffs and blockers.\n\nMinishop supports registration via email and web-based admin without Telegram (read its [no-Telegram guide](https://github.com/3252a8/remnawave-minishop/blob/main/docs/features/telegram-optional.md)). **Bedolaga is NOT selected:** its LICENSE contains Commons Clause restricting commercial service resale, despite short README MIT text. Alternative [STEALTHNET](https://github.com/STEALTHNET-APP/remnawave-STEALTHNET-Bot) requires an independent security/license fit review.
 
 ### Business constraints
 
@@ -63,7 +63,7 @@ The versions are pinned for **reproducible evaluation**, not verified compatibil
 ## Required proof before buying services from customers
 
 - [x] Upstream candidates and licenses reviewed from primary repositories
-- [x] Minishop selected for **staging evaluation**
+- [x] ShahPanel selected for **first Iran-first evaluation** (Minishop remains fallback; neither is security/production approved)
 - [x] Source revisions pinned and staging runbook written
 - [x] Previous experimental 500-seat SQL guard passed **disposable** PostgreSQL CI tests (NOT integrated in Minishop)
 - [ ] Independent license/security and dependency audit
@@ -77,7 +77,7 @@ The versions are pinned for **reproducible evaluation**, not verified compatibil
 ## Project index
 
 - [HISTORY.md](HISTORY.md) — append-only engineering log; most important document
-- [ADR-001 — current approved staging direction](docs/ADR-001-commerce-stack.md)
+- [ADR-002 — current Persian-first evaluation priority](docs/ADR-002-persian-first.md)\n- [ADR-001 — earlier Minishop-first evaluation, retained for historical comparison](docs/ADR-001-commerce-stack.md)
 - [Minishop staging runbook](docs/minishop-staging-runbook.md)
 - [Build versus reuse evaluation](docs/build-vs-reuse-review.md)
 - [Pinned upstream sources](config/upstream.lock)
