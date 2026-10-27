@@ -1,0 +1,17 @@
+{
+  "project": "XRAY-500",
+  "telegram": {
+    "username": "RavixNetBot",
+    "public_url": "https://t.me/RavixNetBot",
+    "integration": "ShahPanel / ShahBot",
+    "status": "awaiting_private_credentials_and_https_host",
+    "source": "user-provided public Telegram link",
+    "telegram_api_verified": false
+  },
+  "notes": [
+    "This file is public project metadata, NOT a live Bot API or webhook configuration.",
+    "Do not add the Telegram bot token, chat IDs, app secrets or webhook secret.",
+    "ShahBot saves bot credentials via the running ShahPanel admin UI.",
+    "Existing independent MirzaBot/RAVIX private source is not to be modified automatically."
+  ]
+}
