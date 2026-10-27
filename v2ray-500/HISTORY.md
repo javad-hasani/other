@@ -218,3 +218,12 @@
 - **Action:** Updated `scripts/ravix-telegram-preflight.ps1` with `-FromClipboard` in commit `ff7209883`.
 - **Validation:** GitHub Actions run `40458040061` and run `40458039977` passed for this revision. CI validates execution without private credentials; **the actual BotFather account, token and webhook have not been authenticated or connected**.
 - **Next:** On the user's own Windows machine, redownload the script, copy only the token locally, and run with `-fromclipboard`; then inspect redacted getMe/webhook status and continue toward local ShahPanel polling setup.
+
+## 2026-10-27 — H021 — VS Code local .env token support (prepared and CI tested)
+
+- **Assumption / تصور:** User prefers to paste the bot token once into an editor rather than work around unreliable terminal paste and keyboard casing.
+- **Evidence / شاهد:** Previous PowerShell copy/paste lost uppercase letters and failed local token format validation. User explicitly asked to manage the code and token in VS Code. A private file outside public Git permits local, user-controlled testing without committing the credential.
+- **Decision / تصمیم:** Keep the PowerShell script in version control but save the Telegram token **only** inside a private file `~/.ravix/.env` on the user's Windows system. Add opt-in `-FromEnvFile` mode to the existing read-only test. Never bake the credential into a tracked `.ps1`, README or GitHub Action.
+- **Action:** Updated `scripts/ravix-telegram-preflight.ps1` (commit `e86a7f740`) to read exactly one `RAVIX_BOT_TOKEN` variable from the fixed local home directory path, without logging it. Updated `docs/telegram-shahbot-connection.md` (commit `cf6a5c864`) with VS Code local setup.
+- **Validation:** Both Windows/PowerShell and existing project workflows succeeded on the script revision: https://github.com/javad-hasani/other/actions/runs/40458432305 and https://github.com/javad-hasani/other/actions/runs/40458432357 . These are **no-secret CI checks only**; the user has not reported a successful local authenticated Telegram getMe and no bot/runtime is connected.
+- **Next:** User creates local `.env` outside Git and runs `powershell.exe -ep bypass -file .\ravix-telegram-preflight.ps1 -fromenvfile`, shares redacted result, then locally installs ShahPanel and uses polling.
