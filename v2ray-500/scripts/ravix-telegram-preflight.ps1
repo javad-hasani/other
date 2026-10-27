@@ -1,11 +1,12 @@
 # RAVIX Telegram preflight for Windows PowerShell 5.1+ / PowerShell 7+
 # Read-only: checks installed commands and validates BotFather token via
 # getMe/getWebhookInfo. Never registers or deletes Telegram webhooks.
-# NO secrets are saved to file or printed to the screen.
+# This script never writes secrets to disk or prints them to the screen.
+# Optional -FromEnvFile reads a USER-managed local .env outside Git.
 # Requires network access to https://api.telegram.org and an owner-supplied token.
 # Source and changes are tracked in HISTORY.md (RAVIX XRAY-500).
 [CmdletBinding()]
-param([switch]$SkipTelegram, [switch]$FromClipboard)
+param([switch]$SkipTelegram, [switch]$FromClipboard, [switch]$FromEnvFile)
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $ExpectedUsername = 'RavixNetBot'
@@ -36,7 +37,32 @@ if ($answer -notin @('y','Y','yes','YES')) {
 $secureToken = $null
 $token = $null
 try {
-    if ($FromClipboard) {
+    if ($FromClipboard -and $FromEnvFile) {
+        Write-Host '[ERROR] Select either -FromClipboard or -FromEnvFile, not both.' -ForegroundColor Red
+        return
+    }
+    if ($FromEnvFile) {
+        # Local file is OUTSIDE the Git checkout and never sent to this repo.
+        # Only a single RAVIX_BOT_TOKEN variable is accepted.
+        $envPath = Join-Path $env:USERPROFILE '.ravix\.env'
+        if (-not (Test-Path -LiteralPath $envPath -PathType Leaf)) {
+            Write-Host '[ERROR] Missing private file: ~/.ravix/.env. Create it in VS Code (outside Git).' -ForegroundColor Red
+            return
+        }
+        try {
+            $entries = @(Get-Content -LiteralPath $envPath -ErrorAction Stop |
+                Where-Object { $_ -match '^RAVIX_BOT_TOKEN\s*=' })
+            if ($entries.Count -ne 1) {
+                Write-Host '[ERROR] Private file must contain exactly one RAVIX_BOT_TOKEN=... line.' -ForegroundColor Red
+                return
+            }
+            $token = (($entries[0] -replace '^RAVIX_BOT_TOKEN\s*=\s*', '').Trim()).Trim('"').Trim("'").Trim()
+            Write-Host '[OK] Local token file loaded (secret not displayed).' -ForegroundColor Green
+        } catch {
+            Write-Host '[ERROR] Could not read local .env file. No Telegram request made.' -ForegroundColor Red
+            return
+        }
+    } elseif ($FromClipboard) {
         # On some terminals pasted uppercase characters are lost. Reading the
         # Windows clipboard directly avoids the terminal's paste translation.
         # This mode is opt-in. Never print clipboard contents or request URLs.
