@@ -245,3 +245,12 @@
 - **Action:** Reviewed pinned upstream `.env.example` and README manual installation requirements. Logged MySQL status only; did not run any command against user's machine or credentials.
 - **Validation:** MySQL service running based on user-provided systemd status; Telegram `getMe` and no-webhook status were separately reported in H022. No ShahPanel instance is installed or connected by the assistant.
 - **Next:** Run local `php -v`, `composer --version`, then clone `v3.38.5` under `~/ravix-lab`, verify checkout SHA, configure an isolated MySQL app account before creating admin or starting polling.
+
+## 2026-10-27 — H024 — Pinned ShahPanel source cloned locally (user-verified)
+
+- **Assumption / تصور:** Ubuntu 24.04 WSL2 host can be used as an isolated local PHP/MySQL staging environment without buying a VPS.
+- **Evidence / شاهد:** User's actual Ubuntu terminal shows `php -v` => PHP 8.3.6 CLI, `composer --version` => 2.7.1, and `git clone --branch v3.38.5 --depth 1 https://github.com/shahinst/shahpanel.git` completed at `~/ravix-lab/shahpanel`. `git rev-parse HEAD` exactly equals the locked commit `e898e84999779fd105a3e948a95ced3f44db9df1`. MySQL service was verified active separately in H023.
+- **Decision / تصمیم:** Keep pinned/tagged upstream in a detached HEAD for reproducibility and perform stepwise manual local staging instead of running the upstream root server installer. Do not include any private bot token in Git/source checkout. Do not activate sales/payments or real VPN services.
+- **Action:** Documented successful local prerequisites and provided `composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction`, followed by `composer check-platform-reqs --no-dev`. No action was executed remotely against the user's WSL instance by the assistant.
+- **Validation:** PHP, Composer and upstream source identity verified from user output. Dependency install outcome, local MySQL database account, ShahPanel migrations, admin login, polling and Telegram replies are still **PENDING**.
+- **Next:** Review Composer install/extension check, then configure one dedicated local MySQL database and least-privilege user, create `.env` with localhost settings and generated APP_KEY, safely migrate and finalize in lab before testing ShahBot Long Polling.
