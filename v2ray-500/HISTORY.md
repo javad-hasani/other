@@ -191,3 +191,12 @@
 - **Action:** Authored `docs/telegram-shahbot-connection.md` (commit `f3fd1bb00`), added navigation and scope clarifications to README (`674bab182`), ShahPanel runbook (`33cba5f80`), rollout checklist (`322074858`).
 - **Validation:** Repository source reviewed and guide committed; **NO BotFather bot was created by this assistant; no token or username supplied; no `getMe`, `setWebhook`, `sendMessage`, server or real Telegram traffic was executed.** Earlier capacity CI does not test native ShahBot.
 - **Next:** Create a **dedicated** Telegram bot through @BotFather, store token privately, provide only its public `@username` if needed for project naming; then after an isolated ShahPanel host with HTTPS is online, use ShahPanel's native Connect tab and verify username, webhook health, real admin chat delivery and `/start` responses before enabling payments or sales.
+
+## 2026-10-27 — H018 — Existing alternative bot codebase detected (DONE: read-only verification; no migration)
+
+- **Assumption / تصور:** The private Telegram bot work created earlier might overlap with the ShahBot module now selected for the same independent subscription business.
+- **Evidence / شاهد:** Connected GitHub shows a separate **private** existing PHP/MirzaBot-based Telegram bot repository with code and README indicating no deployed webhook/VPS. This is a different source tree from `javad-hasani/other/v2ray-500`; no live BotFather username or Telegram connection was validated. **The private repository path, tokens, and configuration values are intentionally not reproduced in this public project history.**
+- **Decision / تصمیم:** ShahBot native to ShahPanel stays primary for the current ShahPanel + Remnawave architecture. **Do not deploy two independent Telegram billing bots or assign one Telegram BotFather token to both**. Keep the private MirzaBot code unmodified as reference until a user-approved migration/retirement plan exists.
+- **Action:** Inspected only public-facing metadata/readme via the user's authorized GitHub connection; did not edit, delete, transfer, or deploy the other repository.
+- **Validation:** Existing source code verified as present; no Telegram webhook, getMe, token, BotFather registration or backend runtime observed or modified.
+- **Next:** User establishes/identifies a dedicated BotFather bot username. Store token privately, and only register ShahBot's official webhook after live ShahPanel HTTPS and correct owner/admin settings are available.
