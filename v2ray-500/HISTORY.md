@@ -209,3 +209,12 @@
 - **Action:** Created `config/telegram-public.json` (commit `f9102d2a5`), updated README (`c713ca867`), revised ShahBot connection instructions to check `@BotFather /mybots` and use existing bot (`28553ab2e`), extended source preflight to validate public metadata and reject unapproved key names (`7a66b6b6e`, `3e2054c8e`).
 - **Validation:** GitHub files committed; CI for the first preflight revision **passed** https://github.com/javad-hasani/other/actions/runs/40455980500 . A tightened metadata schema check was then committed and its CI run is https://github.com/javad-hasani/other/actions/runs/40456016287 (verify result when completed). **No BotFather or Telegram Bot API action, server, webhook or working ShahBot was executed.**
 - **Next:** In `@BotFather` verify `@RavixNetBot` appears under `/mybots`, keep Bot API token in a private secure store and send `/start` to it. Once a real ShahPanel with HTTPS is deployed, enter token in ShahBot admin, `owner_user_id` and `admin_chat_ids`, keep sales disabled, then run its native Connect action and confirm `getMe`, Webhook status, and an admin test message.
+
+## 2026-10-27 — H020 — Windows clipboard paste bug mitigation for Telegram preflight
+
+- **Assumption / تصور:** Local Windows terminal paste may lose capital letters, altering case-sensitive Telegram credentials before the preflight can test their validity.
+- **Evidence / شاهد:** User shared multiple PowerShell commands with missing uppercase characters, and repeated local token-format failures. No Telegram API request occurs when this preliminary validation fails.
+- **Decision / تصمیم:** Keep the existing secure hidden-input default, add a **separate opt-in direct-clipboard-read mode** to the Windows preflight. This mode reads locally and overwrites clipboard contents; it never commits credentials, prints them, registers webhooks or starts production sales.
+- **Action:** Updated `scripts/ravix-telegram-preflight.ps1` with `-FromClipboard` in commit `ff7209883`.
+- **Validation:** GitHub Actions run `40458040061` and run `40458039977` passed for this revision. CI validates execution without private credentials; **the actual BotFather account, token and webhook have not been authenticated or connected**.
+- **Next:** On the user's own Windows machine, redownload the script, copy only the token locally, and run with `-fromclipboard`; then inspect redacted getMe/webhook status and continue toward local ShahPanel polling setup.
