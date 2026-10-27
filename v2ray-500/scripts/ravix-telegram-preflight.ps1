@@ -5,7 +5,7 @@
 # Requires network access to https://api.telegram.org and an owner-supplied token.
 # Source and changes are tracked in HISTORY.md (RAVIX XRAY-500).
 [CmdletBinding()]
-param([switch]$SkipTelegram)
+param([switch]$SkipTelegram, [switch]$FromClipboard)
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $ExpectedUsername = 'RavixNetBot'
@@ -33,10 +33,32 @@ if ($answer -notin @('y','Y','yes','YES')) {
     Write-Host 'Token test skipped. No Telegram calls performed.'
     return
 }
-$secureToken = Read-Host 'Paste BotFather token here (input hidden, not saved)' -AsSecureString
+$secureToken = $null
 $token = $null
 try {
-    $token = [System.Net.NetworkCredential]::new('', $secureToken).Password
+    if ($FromClipboard) {
+        # On some terminals pasted uppercase characters are lost. Reading the
+        # Windows clipboard directly avoids the terminal's paste translation.
+        # This mode is opt-in. Never print clipboard contents or request URLs.
+        Write-Host 'Clipboard mode: copy ONLY the API token from BotFather before running this script.'
+        try {
+            $token = ([string](Get-Clipboard -Raw -ErrorAction Stop)).Trim()
+        } catch {
+            Write-Host '[ERROR] Could not read the Windows clipboard. No Telegram calls performed.' -ForegroundColor Red
+            return
+        }
+        try {
+            # Immediately overwrite the clipboard so accidental paste will not
+            # expose the token in chat, terminals or other apps.
+            Set-Clipboard -Value ' ' -ErrorAction Stop
+            Write-Host '[OK] Clipboard overwritten after reading token.'
+        } catch {
+            Write-Host '[WARN] Could not clear clipboard; clear it manually now.' -ForegroundColor Yellow
+        }
+    } else {
+        $secureToken = Read-Host 'Paste BotFather token here (input hidden, not saved)' -AsSecureString
+        $token = [System.Net.NetworkCredential]::new('', $secureToken).Password.Trim()
+    }
     if ($token -notmatch '^\d{5,}:[A-Za-z0-9_-]{30,}$') {
         Write-Host '[ERROR] Token format appears invalid. Check BotFather privately.' -ForegroundColor Red
         return
