@@ -22,6 +22,13 @@
 
 These Git references were checked against published release tags; see [source lock](config/upstream.lock). ShahPanel carries **AGPL-3.0-or-later**; read its source-availability requirements if modifying the hosted app.
 
+## Telegram bot identity (public metadata only)
+
+- User-provided public bot address: **[@RavixNetBot](https://t.me/RavixNetBot)**.
+- This username has **not** been verified via an authenticated Telegram Bot API `getMe` call. No webhook is configured.
+- Public metadata is tracked in [config/telegram-public.json](config/telegram-public.json); never store private BotFather tokens here.
+- [Native ShahBot connection checklist](docs/telegram-shahbot-connection.md) covers first `/start`, HTTPS staging, `admin_chat_ids`, and verification.
+
 ## Fixed business constraints
 
 - Maximum **500 active paid subscriptions** (NOT necessarily 500 simultaneous users).
@@ -49,7 +56,8 @@ The fetch script only clones pinned source revisions under ignored `vendor/`. **
 - [x] Write [ShahPanel staging runbook](docs/shahpanel-staging-runbook.md) and [ADR-003](docs/ADR-003-shahpanel-selection.md).
 - [x] Verify built-in ShahBot module, Webhook/secret verification, and document [Telegram connection checklist](docs/telegram-shahbot-connection.md); no live bot connection yet.
 - [ ] Independently review source/dependencies/root installer and licenses.
-- [ ] Create dedicated Telegram bot using @BotFather, store token privately (never GitHub/ChatGPT), then connect via native ShahBot Settings after a real HTTPS panel exists.
+- [x] User provided intended public Telegram username **@RavixNetBot** (identity recorded; ownership/`getMe` not verified).
+- [ ] Keep BotFather token privately (never GitHub/ChatGPT), then connect via native ShahBot Settings after a real HTTPS panel exists.
 - [ ] Start isolated ShahPanel **Laravel/MySQL** test host.
 - [ ] Verify ShahPanel Persian/RTL and Zarinpal sandbox; test 500-active global cap and replay resistance.
 - [ ] Start official Remnawave staging backend + one node; test v3 API interoperability.
