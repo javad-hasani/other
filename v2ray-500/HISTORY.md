@@ -279,3 +279,10 @@
 - **Decision / تصمیم:** Advance to creating a local-only admin, setting a randomized non-default admin path, writing the upstream-required `.installed.lock` **only if install:finalize succeeds**, and starting `php artisan serve` loopback-only. No ShahBot activation or Telegram token change yet.
 - **Action:** Reviewed pinned upstream README manual installation steps, source for `install:finalize`, and `shahpanel_installed()`; the latter specifically checks the presence of `.installed.lock`. Keep admin credential out of shell argv/history using a temporary environment variable. No private credentials stored.
 - **Validation:** Database migrations **DONE based on user's output**; admin account, lock, local login, module activation, long polling and actual Telegram replies **PENDING**.
+
+## 2026-10-27 — H029 — Local ShahPanel login shows credential mismatch; targeted admin password repair
+
+- **Assumption / تصور:** A completed local `install:finalize` and a visible sign-in form mean the lab database and HTTP application are operational enough for a credential-only recovery.
+- **Evidence / شاهد:** User reported `These credentials do not match our records.` after the prior local admin account creation. Pinned `v3.38.5` `AuthController::loginUnified` uses `Auth::attempt` with a `username` field, not email. Pinned `InstallFinalizeCommand` finds an existing administrator by username or email, updates its password with the User model's `hashed` cast, and accepts the new password from an environment variable.
+- **Decision / تصمیم:** Confirm login uses `ravixadmin` rather than the email, then safely reset only this local lab administrator's password via `VPN_ADMIN_PASSWORD` environment variable read from hidden Ubuntu prompt, without exposing password in terminal argv or command history. Do not reset the database, rerun migrations, delete the admin account, or touch the Telegram token.
+- **Validation:** Login failure is user-reported; credential repair and successful login are not yet verified.
