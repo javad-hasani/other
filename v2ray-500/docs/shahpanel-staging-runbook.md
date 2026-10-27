@@ -49,6 +49,10 @@ vendor/bin/phpunit
 
 The above commands are guidance, **not executed by this assistant**. Existing upstream tests should run on a *disposable* local DB. Do not copy sample test credentials into any real hosted application.
 
+## Telegram — built-in ShahBot (no custom bot)
+
+The ShahPanel source includes a Persian sales/support bot at `modules/shahbot/`, tested in source at pinned `v3.38.5`. Do not install the old MirzaBot or write a new bot runtime in parallel. Follow the [ShahBot connection checklist](telegram-shahbot-connection.md): create a separate bot with @BotFather, keep token out of public Git, configure `APP_URL` HTTPS and owner/admin chat IDs, then use ShahPanel admin's **ShahBot → Settings → Connection → Connect** to run built-in `getMe`, `setWebhook` and test message. Disable sales and payments until sandbox tests pass.
+
 ## Known blockers
 
 - No installed ShahPanel or linked Remnawave service.
