@@ -100,3 +100,29 @@ powershell.exe -ep bypass -file .\ravix-telegram-preflight.ps1 -fromenvfile
 Answer `y` when prompted. The script reads `~/.ravix/.env` directly, checks the token format, calls `getMe` and `getWebhookInfo`, and never writes or prints the token. An invalid format may mean the file includes BotFather explanation text instead of only the API token; fix locally.
 
 **This is a preflight only, not a working Telegram bot.** After preflight passes, deploy the ShahPanel runtime locally and select polling mode; token is then entered securely into ShahBot's administration page. Never enable payments on the test system.
+
+## Local WSL2 walkthrough — ShahBot on localhost, without VPS (2026-10-27)
+
+User-verified baseline: ShahPanel v3.38.5 at pinned upstream commit, Ubuntu 24.04/WSL2, MySQL 8, PHP 8.3, migrations done, local `ravixadmin` login successful. Telegram `getMe` previously verified `@RavixNetBot`; no webhook at last check.
+
+1. In ShahPanel admin, open **Settings > Modules**, find bundled `shahbot`, click **Activate** (not upload ZIP). Activation loads the module migrations; after refresh, ShahBot menu appears.
+2. ShahBot's `owner_user_id` accepts **Agent or Seller only**. The `ravixadmin` account is an Admin and cannot be the owner. For a simple isolated lab, create an **Agent** via admin **Agents > Create**, with a unique login, real-value private password, and active status; do not assign production plans/servers. A Seller would require an Agent parent.
+3. IMPORTANT SAFETY DEFAULTS: ShahBot default `sales_enabled=1`, `renew_enabled=1`, `topup_enabled=1`, `pay_zarinpal=1`, `pay_crypto=1`. Before connecting, in ShahBot **Settings** tabs turn OFF **Store: sales / renew / test / transfer / location / refund**; **Wallet: top-up**; **Online: Zarinpal / Crypto / Stars**. Save each tab individually. Also disable extraneous reminders/operations as needed. Keep any real payment gateway or VPN target unconfigured.
+4. In Telegram, open the existing `@RavixNetBot` and send `/start` *before starting the polling worker*.
+5. Obtain the numeric private chat ID using the improved, locally-running preflight (PowerShell on Windows); no bot token is shown or transmitted anywhere other than the official Bot API:
+```powershell
+cd $env:userprofile\downloads
+iwr https://raw.githubusercontent.com/javad-hasani/other/main/v2ray-500/scripts/ravix-telegram-preflight.ps1 -outfile .\ravix-telegram-preflight.ps1 -usebasicparsing
+powershell.exe -ep bypass -file .\ravix-telegram-preflight.ps1 -fromenvfile -showchatids
+```
+Answer `y`, then read the local `[CHAT-ID]` line. It is read-only `getUpdates` without offset, and **must not run concurrently with polling or an active webhook**. Do not share chat ID publicly.
+6. ShahBot > Settings > **Connection**: paste only the local BotFather token into bot token field, choose the newly created Agent as owner, set mode to **Long polling**, enter private numeric chat ID in `admin_chat_ids` (one per line), leave proxy blank if outbound Telegram is accessible. Click **Save** first and **Connect to Telegram** second. Source's `WebhookService::connect` confirms bot via `getMe`, calls `deleteWebhook` when mode is polling, and attempts an admin test `sendMessage`. If no `admin_chat_ids` or user didn't `/start`, the test reports failure even though getMe succeeded.
+7. Keep `php artisan serve --host=127.0.0.1 --port=8000` in terminal A. In a separate Ubuntu terminal B:
+```bash
+cd ~/ravix-lab/shahpanel
+php artisan shahbot:poll --seconds=300
+```
+Send `/start` in Telegram; the handler should reply while this command runs. For ongoing operation while WSL is active, schedule via `php artisan schedule:work` in a separate Ubuntu terminal (instead of running simultaneous direct pollers). This is **local testing**, not 24/7 service: bot stops responding when PC/WSL is stopped.
+8. If error, inspect a **redacted** error description; do not paste token, `.env`, full Telegram API URL, password, or private admin path.
+
+The main bot and optional agent bot must **never** use the same token simultaneously. Paid plan sales stay disabled until a real deployment, payments, network and abuse controls are validated.
