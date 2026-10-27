@@ -9,6 +9,16 @@
 - [ ] Provider acceptable-use policy, quota and total monthly infrastructure cost <= 15M toman
 - [ ] Establish secure staging SSH keys, admin access policy and incident contact
 
+## Telegram / built-in ShahBot
+- [x] Verified ShahBot exists in pinned ShahPanel source, with getMe/setWebhook and Telegram secret header verification
+- [x] Authored nonsecret [ShahBot setup and acceptance instructions](telegram-shahbot-connection.md)
+- [ ] Dedicated BotFather bot username created (never commit bot token)
+- [ ] Working HTTPS ShahPanel and valid APP_URL on an independent server
+- [ ] Owner agent/seller, admin_chat_ids configured safely in live admin UI
+- [ ] Built-in Connect action succeeds, getWebhookInfo URL and error count checked
+- [ ] Bot /start and actual admin test message succeed; no duplicate bot webhook
+- [ ] Purchase, trial, wallet top-ups disabled during setup; permissions and payment flow verified before reopening
+
 ## ShahPanel (commercial admin)
 - [ ] Install ShahPanel on isolated staging Ubuntu with PHP >=8.2 / Laravel 11 / MySQL 8
 - [ ] Persian RTL admin + client/reseller routes validated across devices
