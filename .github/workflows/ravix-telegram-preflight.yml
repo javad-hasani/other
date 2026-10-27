@@ -1,0 +1,38 @@
+name: RAVIX Telegram read-only preflight
+on:
+  push:
+    paths:
+      - "v2ray-500/scripts/ravix-telegram-preflight.ps1"
+      - ".github/workflows/ravix-telegram-preflight.yml"
+  pull_request:
+    paths:
+      - "v2ray-500/scripts/ravix-telegram-preflight.ps1"
+      - ".github/workflows/ravix-telegram-preflight.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows-powershell-51:
+    runs-on: windows-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate on Windows PowerShell 5.1 without tokens
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & ./v2ray-500/scripts/ravix-telegram-preflight.ps1 -SkipTelegram
+          if ($LASTEXITCODE -ne $null -and $LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+  linux-powershell-7:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate on PowerShell 7 without tokens
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & ./v2ray-500/scripts/ravix-telegram-preflight.ps1 -SkipTelegram
+          if ($LASTEXITCODE -ne $null -and $LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
