@@ -6,7 +6,7 @@
 # Requires network access to https://api.telegram.org and an owner-supplied token.
 # Source and changes are tracked in HISTORY.md (RAVIX XRAY-500).
 [CmdletBinding()]
-param([switch]$SkipTelegram, [switch]$FromClipboard, [switch]$FromEnvFile)
+param([switch]$SkipTelegram, [switch]$FromClipboard, [switch]$FromEnvFile, [switch]$ShowChatIds)
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $ExpectedUsername = 'RavixNetBot'
@@ -125,6 +125,43 @@ try {
         }
         $pending = [int]$info.result.pending_update_count
         Write-Host ('Pending updates (count only): ' + $pending)
+        if ($ShowChatIds) {
+            # Optional read-only lookup for the user's own private chat with
+            # the bot. Never read this while a live poller is consuming updates.
+            if (-not [string]::IsNullOrWhiteSpace($webhookUrl)) {
+                Write-Host '[WARN] Chat ID lookup skipped: webhook is configured.' -ForegroundColor Yellow
+            } else {
+                Write-Host '[INFO] Chat ID check: send /start to @RavixNetBot first; do NOT run while ShahBot polling is active.'
+                try {
+                    $updates = Invoke-RestMethod -Method Post -Uri ($baseUri + 'getUpdates') -TimeoutSec 18 -Body @{}
+                    if ($updates.ok -ne $true) {
+                        Write-Host '[WARN] Telegram did not return chat updates.' -ForegroundColor Yellow
+                    } else {
+                        $ids = @(
+                            foreach ($update in @($updates.result)) {
+                                if ($null -eq $update -or $null -eq $update.PSObject.Properties['message']) { continue }
+                                $msg = $update.message
+                                if ($null -eq $msg -or $null -eq $msg.chat) { continue }
+                                if ($msg.chat.type -eq 'private') {
+                                    [string]$msg.chat.id
+                                }
+                            }
+                        )
+                        $ids = @($ids | Select-Object -Unique)
+                        if ($ids.Count -eq 0) {
+                            Write-Host '[WARN] No private chat ID found. Send /start in your bot chat and retry.' -ForegroundColor Yellow
+                        } else {
+                            foreach ($id in $ids) {
+                                Write-Host ('[CHAT-ID] Private Telegram chat ID (enter into ShahBot admin_chat_ids): ' + $id)
+                            }
+                        }
+                    }
+                } catch {
+                    # Do not print Telegram exception text: its URI contains the secret.
+                    Write-Host '[WARN] Chat ID lookup failed. Ensure no other poller is running.' -ForegroundColor Yellow
+                }
+            }
+        }
     } catch {
         Write-Host '[WARN] getWebhookInfo failed. No changes were made.' -ForegroundColor Yellow
     }
