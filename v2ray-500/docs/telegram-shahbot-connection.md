@@ -76,3 +76,27 @@
 - [ ] تست امنیت، ظرفیت و پرداخت پیش از فروش عمومی
 
 **این سند راهنماست، نه شاهد اتصال انجام‌شده. هیچ Token/Webhook/API در این مرحله ساخته یا ثبت نشده است.**
+
+## VS Code and a local token file
+
+The recommended Windows development workflow does not require pasting secrets in the terminal. Use VS Code to create a local file at `C:\Users\vadoo\.ravix\.env`. This is **outside the Git repository** and must never be committed, screenshotted, or pasted into chat.
+
+The file must contain just one variable:
+
+```dotenv
+RAVIX_BOT_TOKEN=YOUR_PRIVATE_BOTFATHER_TOKEN
+```
+
+Replace the placeholder **locally** with the token returned by BotFather. Save it as `.env` (not `.env.txt`), close the editor tab, and do not use VS Code Settings Sync to sync secrets. Any other local programs with access to the Windows user profile may be able to read it: prefer a dedicated development account and restrict folder permissions.
+
+Download the updated script into `Downloads`, and run it through PowerShell (commands are lowercase for terminals that have broken capital-letter paste):
+
+```powershell
+cd $env:userprofile\downloads
+iwr https://raw.githubusercontent.com/javad-hasani/other/main/v2ray-500/scripts/ravix-telegram-preflight.ps1 -outfile .\ravix-telegram-preflight.ps1 -usebasicparsing
+powershell.exe -ep bypass -file .\ravix-telegram-preflight.ps1 -fromenvfile
+```
+
+Answer `y` when prompted. The script reads `~/.ravix/.env` directly, checks the token format, calls `getMe` and `getWebhookInfo`, and never writes or prints the token. An invalid format may mean the file includes BotFather explanation text instead of only the API token; fix locally.
+
+**This is a preflight only, not a working Telegram bot.** After preflight passes, deploy the ShahPanel runtime locally and select polling mode; token is then entered securely into ShahBot's administration page. Never enable payments on the test system.
