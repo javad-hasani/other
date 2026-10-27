@@ -236,3 +236,12 @@
 - **Action:** Updated engineering history only. No private settings, token, chat id, URLs with secrets, or customer data stored.
 - **Validation:** User provided real `getMe` and `getWebhookInfo` output; no deployed ShahPanel, PHP/MySQL runtime, or `/start` handler verified. Preserve user token locally; do not paste into public Git or chat.
 - **Next:** Check WSL distributions using `wsl -l`, then select a non-destructive Linux development environment; install ShahPanel and run its built-in `shahbot:poll` with sales/trials/payments disabled.
+
+## 2026-10-27 — H023 — Local MySQL running on WSL2 Ubuntu (user-verified)
+
+- **Assumption / تصور:** A local MySQL 8 service would be available after WSL2 Ubuntu 24.04 provisioning.
+- **Evidence / شاهد:** User reported `wsl -l -v`: `Ubuntu-24.04 Running VERSION 2`. From that instance, `sudo service mysql status` showed `mysql.service` `active (running)` / `Server is operational` on 2026-10-27. No PHP, Composer or ShahPanel version checks have yet been provided following installation.
+- **Decision / تصمیم:** Continue with local, non-production ShahPanel lab under the Linux user's home directory, not under `/mnt/c`, and use the existing pinned ShahPanel v3.38.5 commit. Verify PHP and Composer before attempting Composer install or writing to the database. Never run the root server installer on this local WSL environment.
+- **Action:** Reviewed pinned upstream `.env.example` and README manual installation requirements. Logged MySQL status only; did not run any command against user's machine or credentials.
+- **Validation:** MySQL service running based on user-provided systemd status; Telegram `getMe` and no-webhook status were separately reported in H022. No ShahPanel instance is installed or connected by the assistant.
+- **Next:** Run local `php -v`, `composer --version`, then clone `v3.38.5` under `~/ravix-lab`, verify checkout SHA, configure an isolated MySQL app account before creating admin or starting polling.
