@@ -263,3 +263,11 @@
 - **Action:** Inspected upstream pinned `.env.example`, `InstallFinalizeCommand.php`, and ShahBot module-registration migration. Confirmed `shahbot` is **registered as installed, not active** until enabled from ShahPanel Settings > Modules. Documentation/history updated; no commands executed on the user's machine.
 - **Validation:** Composer dependencies **DONE** from real log; DB initialization, Laravel migrations, admin creation, module activation, real polling and Telegram replies all **PENDING**.
 - **Next:** User creates `ravix_shahpanel_lab` in MySQL with dedicated least-privilege schema account and configures local `.env`; verify PDO connectivity and then proceed to `php artisan migrate`, `install:finalize` and local-only web server.
+
+## 2026-10-27 — H026 — ShahPanel local staging MySQL connectivity verified, migrations pending
+
+- **Assumption / تصور:** Local ShahPanel .env may now be correctly configured with a dedicated test schema.
+- **Evidence / شاهد:** User-provided `php artisan db:show` output: MySQL `8.0.46-0ubuntu0.24.04.4`, connection `mysql`, database `ravix_shahpanel_lab`, host `localhost`, port `3306`, username `ravix_lab`, open connections `1`, tables `0`. No password or `.env` content shared.
+- **Decision / تصمیم:** Begin schema migrations using `php artisan migrate` and verify using `php artisan migrate:status`, without using destructive `migrate:fresh` or switching databases. The user will execute all commands locally; neither the Telegram bot nor sales is being enabled.
+- **Action:** Documented confirmed connectivity and supplied the next readout instructions.
+- **Validation:** DB connectivity **PASS**; migrations, administrator setup, ShahBot module activation, Long Polling and live replies still **PENDING**.
