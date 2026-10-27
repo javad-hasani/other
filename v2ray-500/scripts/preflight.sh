@@ -35,7 +35,7 @@ assert bot['telegram']['username'] == 'RavixNetBot'
 assert bot['telegram']['public_url'] == 'https://t.me/RavixNetBot'
 assert bot['telegram']['telegram_api_verified'] is False
 assert bot['telegram']['status'] == 'awaiting_private_credentials_and_https_host'
-assert not any(k in json.dumps(bot).lower() for k in ('bot_token', 'webhook_secret', 'api_key')) or all(k not in bot['telegram'] for k in ('bot_token', 'webhook_secret', 'api_key'))
+assert set(bot['telegram']) == {'username', 'public_url', 'integration', 'status', 'source', 'telegram_api_verified'}
 assert 'hard_max = 500' in Path('db/migrations/001_capacity_guard.sql').read_text()
 print('PASS: offline preflight, pinned source manifest, files and SQL cap')
 PY
