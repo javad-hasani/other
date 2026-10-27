@@ -227,3 +227,12 @@
 - **Action:** Updated `scripts/ravix-telegram-preflight.ps1` (commit `e86a7f740`) to read exactly one `RAVIX_BOT_TOKEN` variable from the fixed local home directory path, without logging it. Updated `docs/telegram-shahbot-connection.md` (commit `cf6a5c864`) with VS Code local setup.
 - **Validation:** Both Windows/PowerShell and existing project workflows succeeded on the script revision: https://github.com/javad-hasani/other/actions/runs/40458432305 and https://github.com/javad-hasani/other/actions/runs/40458432357 . These are **no-secret CI checks only**; the user has not reported a successful local authenticated Telegram getMe and no bot/runtime is connected.
 - **Next:** User creates local `.env` outside Git and runs `powershell.exe -ep bypass -file .\ravix-telegram-preflight.ps1 -fromenvfile`, shares redacted result, then locally installs ShahPanel and uses polling.
+
+## 2026-10-27 — H022 — Telegram Bot API identity verified on user's Windows workstation
+
+- **Assumption / تصور:** Local `.env` handling fixes terminal paste corruption, and the chosen public username can be verified without owning an HTTPS host.
+- **Evidence / شاهد:** The user ran the updated read-only Windows preflight and shared the output: `[OK] Local token file loaded`, `[PASS] Telegram getMe confirms @RavixNetBot`, `[PASS] No Telegram webhook is currently registered`, `Pending updates (count only): 0`. Windows PATH reports Git FOUND, `wsl.exe` FOUND, but `php`, `composer`, `mysql`, and `docker` MISSING. The actual token was not supplied to the assistant.
+- **Decision / تصمیم:** Mark **Telegram API connectivity and bot identity as verified from user-provided local execution output**, not ShahBot integration. No webhook is configured, and no live handler or VPN server has been deployed. Next inspect `wsl -l` on Windows to determine whether Ubuntu/Linux distribution is installed before attempting isolated ShahPanel/MySQL installation.
+- **Action:** Updated engineering history only. No private settings, token, chat id, URLs with secrets, or customer data stored.
+- **Validation:** User provided real `getMe` and `getWebhookInfo` output; no deployed ShahPanel, PHP/MySQL runtime, or `/start` handler verified. Preserve user token locally; do not paste into public Git or chat.
+- **Next:** Check WSL distributions using `wsl -l`, then select a non-destructive Linux development environment; install ShahPanel and run its built-in `shahbot:poll` with sales/trials/payments disabled.
