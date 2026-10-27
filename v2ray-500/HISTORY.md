@@ -271,3 +271,11 @@
 - **Decision / تصمیم:** Begin schema migrations using `php artisan migrate` and verify using `php artisan migrate:status`, without using destructive `migrate:fresh` or switching databases. The user will execute all commands locally; neither the Telegram bot nor sales is being enabled.
 - **Action:** Documented confirmed connectivity and supplied the next readout instructions.
 - **Validation:** DB connectivity **PASS**; migrations, administrator setup, ShahBot module activation, Long Polling and live replies still **PENDING**.
+
+## 2026-10-27 — H027 — Full ShahPanel schema migrated in local WSL2 lab (user-verified)
+
+- **Assumption / تصور:** The isolated `ravix_shahpanel_lab` schema can complete the locked ShahPanel v3.38.5 Laravel migrations on PHP 8.3/MySQL 8.
+- **Evidence / شاهد:** User uploaded `php artisan migrate:status` output where **all 115 migration entries shown are marked `[1] Ran`**. Includes `0001_01_01_000000_create_users_table`, `0001_01_01_000016_create_settings_table`, `2026_07_12_190000_create_modules_table`, and `2026_10_10_000000_register_shahbot_module`. The migration list also contains filenames dated in November 2026 from the pinned upstream source; execution status, not filename date, determines completion.
+- **Decision / تصمیم:** Advance to creating a local-only admin, setting a randomized non-default admin path, writing the upstream-required `.installed.lock` **only if install:finalize succeeds**, and starting `php artisan serve` loopback-only. No ShahBot activation or Telegram token change yet.
+- **Action:** Reviewed pinned upstream README manual installation steps, source for `install:finalize`, and `shahpanel_installed()`; the latter specifically checks the presence of `.installed.lock`. Keep admin credential out of shell argv/history using a temporary environment variable. No private credentials stored.
+- **Validation:** Database migrations **DONE based on user's output**; admin account, lock, local login, module activation, long polling and actual Telegram replies **PENDING**.
